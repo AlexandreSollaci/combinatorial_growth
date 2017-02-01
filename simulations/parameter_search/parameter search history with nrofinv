@@ -1,0 +1,63 @@
+Added nrofinv as a parameter
+
+Iteration #1 
+
+
+etaH = [.2];
+etaM = [.05, .1];
+tau = [400, 500];
+lambda = [2];
+kappa = [7];
+xi = [10, 50, 100];
+nrofinv = [50, 100, 300, 500, 700];
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi     num_inv     fval 
+    ____    ____    ___    ______    _____    ___    _______    ______
+
+    0.2     0.05    500    2         7        100    700        2.6645
+
+Elapsed time is 1569.407194 seconds.
+
+##############
+Iteration #2
+
+etaH = [.1, .2, .3];
+etaM = [.03, .05];
+tau = [500, 800];
+lambda = [2];
+kappa = [5, 7];
+xi = [75, 100, 150];
+nrofinv = [600, 700, 800];
+
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi     num_inv     fval 
+    ____    ____    ___    ______    _____    ___    _______    ______
+
+    0.2     0.05    800    2         7        150    800        2.6274
+
+Elapsed time is 13850.823815 seconds.
+
+######################
+Iteration #3
+
+etaH = [.2];
+etaM = [.05];
+tau = [800, 1000];
+lambda = [2];
+kappa = [7];
+xi = [150, 200, 300];
+nrofinv = [800, 1000];
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi     num_inv     fval 
+    ____    ____    ___    ______    _____    ___    _______    ______
+
+    0.2     0.05    800    2         7        150    800        2.6758
+
+Elapsed time is 958.560129 seconds.
+

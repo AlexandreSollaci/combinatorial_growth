@@ -1,0 +1,8 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{25\% subsidy on new technologies for 50 years}{15}{0}{1}
+\beamer@sectionintoc {2}{25\% subsidy on new technologies for 100 years}{18}{0}{2}
+\beamer@sectionintoc {3}{25\% subsidy for new combinations for 50 years}{21}{0}{3}
+\beamer@sectionintoc {4}{25\% subsidy on new combinations for 100 years}{24}{0}{4}
+\beamer@sectionintoc {5}{25\% subsidy for all patents for 50 years}{27}{0}{5}
+\beamer@sectionintoc {6}{25\% subsidy for all patents for 100 years}{30}{0}{6}
+\beamer@sectionintoc {7}{10\% new technology, 50\% new combination, 100 years}{34}{0}{7}

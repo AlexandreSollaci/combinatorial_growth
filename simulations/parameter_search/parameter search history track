@@ -1,0 +1,91 @@
+Initial guesses
+
+etaH = [ .1, .15, .2, .25 ];
+etaM = 0.05;
+tau = [100, 300, 500];
+lambda = [1, 1.5, 2];
+kappa = [2, 5, 7];
+xi = [10, 50, 100, 150];
+
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi      fval 
+    ____    ____    ___    ______    _____    ___    ______
+
+    0.2     0.05    500    2         7        100    2.6563
+
+Elapsed time is 23141.074625 seconds.
+
+#############################
+
+Second iteration
+
+etaH = [ .18, .2, .22];
+etaM = [.04, .05, .06];
+tau = [400, 500, 600, 700];
+lambda = [1.8, 2, 2.2];
+kappa = [5, 7, 9];
+xi = [75, 100, 125];
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi     fval 
+    ____    ____    ___    ______    _____    __    ______
+
+    0.2     0.04    400    2.2       7        75    2.4605
+
+Elapsed time is 69377.499850 seconds.
+
+############################
+
+Third Iteration
+
+etaH = [.2];
+etaM = [.03, .04, .05];
+tau = [350, 400, 450];
+lambda = [2.1, 2.2, 2.3];
+kappa = [7];
+xi = [75];
+
+
+
+
+T = 
+
+    etaH    etaM    tau    lambda    kappa    xi     fval 
+    ____    ____    ___    ______    _____    __    ______
+
+    0.2     0.04    400    2.1       7        75    2.6074
+
+Elapsed time is 1289.244479 seconds.
+
+
+#############################
+
+Using fminsearch with third iteration as starting guess
+
+
+T = 
+
+     etaH        etaM       tau      lambda    kappa      xi      fval 
+    _______    ________    ______    ______    ______    ____    ______
+
+    0.19993    0.041163    398.36    2.1061    7.1581    74.8    2.5237
+
+Elapsed time is 34826.323591 seconds.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
