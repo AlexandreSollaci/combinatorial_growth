@@ -15,7 +15,7 @@ xxi = 200;   % 1/xi is the fraction of feasible combinations
 zeta = 0.012; % probability technology line shuts down
 
 ggamma = .6; % match to labor share of GDP
-epsilon = 2; % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
+epsilon = 3; % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
 
 rr = 0.05; % interest rate
 bbeta = 1/(1+rr); % intertemporal discount factor
@@ -71,7 +71,7 @@ WChangeNC = -(WelfareNC - Welfare0) ./ Welfare0;
 
 welfare_gains_pp = figure(1);
 plot(subsidy_vals, WChangeNT, '--b', subsidy_vals, WChangeNC, 'r')
-legend('New technologies', 'New combination', 'location', 'Northwest')
+legend('New technologies', 'New combination', 'location', 'Northeast')
 title('Welfare gains (%) associated with subsidy value')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
@@ -79,7 +79,7 @@ saveas(gcf, 'tex_files/figures/welfare_pp.png')
 
 welfare_gains_NT = figure(2);
 plot(subsidy_vals, WelfareNT, '--b', subsidy_vals, Welfare0, 'r')
-legend('With subsidy', 'Baseline (so subsidy)', 'location', 'Northwest')
+legend('With subsidy', 'Baseline (so subsidy)', 'location', 'Northeast')
 title('Welfare gains associated with subsidy for new technologies')
 xlabel('Subsidy value')
 ylabel('Welfare value')
@@ -87,7 +87,7 @@ saveas(gcf, 'tex_files/figures/welfare_NT.png')
 
 welfare_gains_NC = figure(3);
 plot(subsidy_vals, WelfareNC, '--b', subsidy_vals, Welfare0, 'r')
-legend('With subsidy', 'Baseline (no subsidy)', 'location', 'Northwest')
+legend('With subsidy', 'Baseline (no subsidy)', 'location', 'Southwest')
 title('Welfare gains associated with subsidy for new combinaitons')
 xlabel('Subsidy value')
 ylabel('Welfare value')

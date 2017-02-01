@@ -110,6 +110,7 @@ function  return_vars = simulate_path_zeta(Tmax, params, nrofinv, period, subsid
 	    growth = zeros(Mt,1);
 	    patent_type = zeros(Mt,3); % in each period, store the new patents that were created
 	    patent_cost = zeros(Mt,1); % keep track of inventors' costs
+        subsidy_cost = zeros(Mt,1); % keep track of the subsidy spending
 	    
 	    mmu = rand(Mt,1)*2*nrofinv/Mt;  % number of inventors in product line
 	    switchtocold = ( rand(Mt,1) < mmu.*xxi./(2.^( Mmat(1:Mt,2) - (year - Mmat(1:Mt,5))*zeta - 2)));   % (= 1 reuse, = 0 new comb)
@@ -219,8 +220,8 @@ function  return_vars = simulate_path_zeta(Tmax, params, nrofinv, period, subsid
 	    firm_cost(t) = (1-ggamma)*sum(quality);
 	    policy_cost(t) = sum(subsidy_cost*mean(quality));
 	    Consumption(t) = GDP(t) - inventor_cost(t) - firm_cost(t) - policy_cost(t);
-	    %Discounted_utility(t) = bbeta^t * Consumption(t)^(1-epsilon) / (1-epsilon) ;
-	    Discounted_utility(t) = bbeta^t * log( Consumption(t) ) ;
+	    Discounted_utility(t) = bbeta^t * Consumption(t)^(1-epsilon) / (1-epsilon) ;
+	    %Discounted_utility(t) = bbeta^t * log( Consumption(t) ) ;
 
 	    % compute total number of patents by category
 	    nrofnewtech = sum(patent_type(:,1));
@@ -228,7 +229,7 @@ function  return_vars = simulate_path_zeta(Tmax, params, nrofinv, period, subsid
 	    nrofreuse = sum(patent_type(:,3));
 	    
 	    % keep track of number of patents created each year
-	    nrofpatents(t) = nrofnewtech+nrofnewcomb+nrofreuse;
+	    % nrofpatents(t) = nrofnewtech+nrofnewcomb+nrofreuse;
 	    
 	    % Populate summary matrix
 	    summat(t+1,1)= year;
