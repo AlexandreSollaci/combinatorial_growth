@@ -1,0 +1,15 @@
+# Untracked files
+
+*.dat
+*.dta
+*.csv
+*.cdb
+*.dct
+*.NLSY79
+*.sas
+*.sdf
+*.log
+*.aux
+*.blg
+*.out
+*synctex.gz
