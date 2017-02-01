@@ -219,7 +219,8 @@ function  return_vars = simulate_path_zeta(Tmax, params, nrofinv, period, subsid
 	    firm_cost(t) = (1-ggamma)*sum(quality);
 	    policy_cost(t) = sum(subsidy_cost*mean(quality));
 	    Consumption(t) = GDP(t) - inventor_cost(t) - firm_cost(t) - policy_cost(t);
-	    Discounted_utility(t) = bbeta^t * Consumption(t)^(1-epsilon) / (1-epsilon) ;
+	    %Discounted_utility(t) = bbeta^t * Consumption(t)^(1-epsilon) / (1-epsilon) ;
+	    Discounted_utility(t) = bbeta^t * log( Consumption(t) ) ;
 
 	    % compute total number of patents by category
 	    nrofnewtech = sum(patent_type(:,1));

@@ -35,13 +35,14 @@ in,top=1in,bottom=1in}
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{llll}
+\begin{tabular}{llp{5cm}p{5cm}}
 \hline \hline
 Parameter & value & interpretation & Moment\\ \hline
 $\gamma$ & 0.6 & Scale of GDP production & Labor share of GDP \\
-$\epsilon$ & 2& Elasticity of intertemporal substitution & From misallocation paper \\
-$J$ & 910 & number of firms & average GDP growth \\
-$I$ & 500 & number of inventors & guess? \\
+$\epsilon$ & 2& Elasticity of intertemporal substitution & From misallocation paper   \\
+$I$ & $e^{100}$ & initial number of inventors &  Match initial number of patents\\
+$\nu$ & 2.8 & ratio of firms to inventors & average GDP growth \\
+$g_1, g_2$&0.066, 0.02 & growth rates of population & patent number growth\\
 $\eta^L$& 0 & reuse benefit & normalized \\
 \hline \hline
 \end{tabular}
@@ -53,33 +54,79 @@ $\eta^L$& 0 & reuse benefit & normalized \\
 \begin{tabular}{lll}
 \hline \hline
 Parameter & value & interpretation \\ \hline
-$\eta^H$ & 0.2 & New technology benefit \\
-$\eta^M$ & 0.04 & New combination benefit \\
-$\tau$ & 400 & Shape parameter for idea distribution \\
-$\xi$ & 75 & $1/\xi$ is the fraction of viable combinations \\
-$\lambda $ & 2.1 & scale parameter of the cost distribution \\
-$\kappa $ & 7  & shape parameter of the cost distribution \\
+$\eta^H$ & 0.3 & New technology benefit \\
+$\eta^M$ & 0.07 & New combination benefit \\
+$\tau$ & 500 & Shape parameter for idea distribution \\
+$\xi$ & 200 & $1/\xi$ is the fraction of viable combinations \\
+$\lambda $ & 1 & scale parameter of the cost distribution \\
+$\kappa $ & 5  & shape parameter of the cost distribution \\
+$\zeta$ & 0.012 & probability that tech line shuts down \\
 \hline \hline
 \end{tabular}
-\caption{Parameters from patent type moment matching}
+\caption{Parameters from patent type fraction moment matching}
 \end{table}
 
 
 \begin{table}[h!]
 \centering
-\input{code/moments_table}
+\input{moments_table}
 \caption{Moments (the missing column numbers are the moments I dropped relative to the old specification). Obs.: column 8 is not included as an argument in the objective function $\Rightarrow$ still under-identified.}
 \end{table}
 
 
 \begin{figure}[h!]
 \begin{center}
-\includegraphics[scale=.8]{code/patents.png}
+\includegraphics[scale=.8]{figures/patents.png}
 \caption{Fraction of patents by type}
 \end{center}
 \end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/num_pats.png}
+\caption{Number of patents produced}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/aggregates.png}
+\caption{Aggregate variables in the final goods market clearing}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/growth.png}
+\caption{Rate of growth of the economy}
+\end{center}
+\end{figure}
+
+\section{Welfare Counterfactuals}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/Welfare_pp.png}
+\caption{Difference in welfare gains between new combinations to new technology}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/Welfare_NT.png}
+\caption{Welfare gains from subsidizing new technologies}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[scale=.8]{figures/Welfare_NC.png}
+\caption{Welfare gains from subsidizing new combinations}
+\end{center}
+\end{figure}
+
+
 \end{document}
-\clearpage
 
 \section*{Sensitivity analysis}
 

@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial-growth/simulations/simulate_model/')
+cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
 
 etaH = 0.3; % NT step size
 etaM = 0.07; % NC step size
@@ -232,11 +232,12 @@ plot(periods, Growth)
 xlim([1836, year])
 %ylim([0.015, 0.025])
 title('Rate of Growth')
+saveas(gcf, 'tex_files/figures/growth.png')
 
 figure(2)
-plot(periods, GDP, 'k', periods, Consumption, 'b', periods, firm_cost, 'r', periods, inventor_cost, 'g')
+plot(periods, log(GDP), 'k', periods, log(Consumption), 'b', periods, log(firm_cost), 'r', periods, log(inventor_cost), 'g')
 legend('GDP', 'Consumption', 'Firms` Cost', 'Inventors` Cost', 'location', 'Northwest')
-title('Aggregate Production, Consumption and Costs')
+title('Aggregate Production, Consumption and Costs (logs)')
 xlabel('Year')
 xlim([1836, year])
 saveas(gcf, 'tex_files/figures/aggregates.png')

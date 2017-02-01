@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial-growth/simulations/welfare_counterfactuals/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.3; % NT step size
 etaM = 0.07; % NC step size
@@ -45,7 +45,7 @@ nrofinv_before = result_before.nrofinv;
 
 % define parameters for counterfactuals
 T_forward = 50;
-subsidy_vals = linspace(.05,1,20);
+subsidy_vals = [0.01, 0.02, 0.03, 0.04, linspace(.05,1,20)];
 subs_len = length(subsidy_vals);
 subsidy = [0, 0; subsidy_vals', zeros(subs_len,1) ; zeros(subs_len,1), subsidy_vals']; 
     % subsidy for new tech, subsidy for new combo
