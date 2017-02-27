@@ -2,13 +2,13 @@ clear
 close all
 clc
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.15; % NT step size
 etaM = 0.06; % NC step size
 etaL = 0; % Refinement step size
 ttau = 1000; % shape parameter for ideas distribution
-llambda = 1; % alpha (cost) has weibull distribution with scale parameter lambda ...
+llambda = 2; % alpha (cost) has weibull distribution with scale parameter lambda ...
 kkappa = 2; % and shape parameter kappa
 xxi = 200;   % 1/xi is the fraction of feasible combinations
 zeta = 0.012; % probability technology line shuts down
@@ -24,19 +24,17 @@ nroffirms = round(nu*nrofinv);
 g1 = 0.066; % initial growth rate of patent numbers
 g2 = 0.02; % final growth rate of patents
 
-seed = 10;
-
 % define parameters for iterations
 Tmax = 230; % total number of periods
 T_subs = 180; % start subsidy period in 2016
 seed = 10;
 params = v2struct(etaH, etaM, etaL, ttau, llambda, kkappa, xxi, zeta, ggamma, epsilon, rr, nu, nrofinv, g1, g2);
 
-% Run simulation with no subsidy
+%% Run simulation with no subsidy
 subsidy_plain = [0,0];
 result_plain = simulate_path_zeta(Tmax, T_subs, params, subsidy_plain, seed);
 
-%% store simulation results
+% store simulation results
 %Mmat_plain = result_plain.Mmat;
 %summat_plain = result_plain.summat;
 % GDP_plain = result_plain.GDP;
@@ -95,15 +93,15 @@ plot(subsidy_vals, WChangeNT)
 title('Welfare gains (%) associated with subsidy value (CRRA)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_pp.png')
+saveas(gcf, 'tex_files/figures/welfare_pp_cost01.png')
 
-welfare_gains_pp = figure(1);
+welfare_log_gains_pp = figure(2);
 plot(subsidy_vals, WlogChangeNT)
 %legend('New technologies', 'New combination', 'location', 'Northeast')
 title('Welfare gains (%) associated with subsidy value (Log)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_log_pp.png')
+saveas(gcf, 'tex_files/figures/welfare_log_pp_cost01.png')
 
 
 

@@ -48,7 +48,6 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
 
     summat = zeros(Tmax + 1,4); % matrix to keep track of fractions of each patent type
     summat(1,:) = [year, 1, 0, 0]; %[year, new tech, new comb, reuse]
-    seed = 1702;
 
     %%%%%%%%%%%%% DEFINE STATES
     %3 states: 1-new tech 2-recomb 3-reuse
@@ -95,7 +94,7 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
             % Draw new ideas and new costs
             % [mstar,aalpha] = modeldraws(j, ttau, llambda, kkappa); % not using seed
             y = rand(2,1); 
-            mstar = ttau*log( (1 + y(1)*exp(1.0*j/ttau)) / (1-y(1)) );                     % Inverse of G
+            mstar = ttau*log( (1 + y(1)*exp(1.01*j/ttau)) / (1-y(1)) );                     % Inverse of G
             aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                           % Inverse of weibull CDF
             aalpha1 = aalpha*(1 - subsidy(1)); % new tech cost
             aalpha2 = aalpha*(1 - subsidy(2)); % new comb cost
