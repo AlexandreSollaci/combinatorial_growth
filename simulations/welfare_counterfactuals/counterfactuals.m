@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial-growth/simulations/welfare_counterfactuals/code/')
+cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/code/')
 
 etaH = 0.2; % NT step size
 etaM = 0.05; % NC step size

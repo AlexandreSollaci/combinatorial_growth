@@ -28,7 +28,7 @@ function [M, F] = compute_moments(summat)
 	    M6 = summat(index2, 4);
 	    [M7 , M8] = max(summat(:,4));
 
-	    F = (M1/0.1 - 1)^2  + (M2/0.35 - 1)^2 + (M4/0.03 - 1)^2 + (M5/0.5 - 1)^2 + (M7/0.55 - 1)^2 + (M8/34 - 1)^2 ;
+	    F = (M1/0.1 - 1)^2  + (M2/0.35 - 1)^2 + (M4/0.03 - 1)^2 + (M5/0.5 - 1)^2 + (M7/0.55 - 1)^2 ; %+ (M8/34 - 1)^2 ;
 	    % M3 and M6 are not independent from the others.
 	    M = [M1, M2, M3, M4, M5, M6, M7, M8];
 

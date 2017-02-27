@@ -30,34 +30,87 @@ in,top=1in,bottom=1in}
 
 \begin{document}
 
-\section*{50 years subsidy}
+\section*{Summary of results}
 
 \begin{itemize}
-\item Figure 1 summarizes results; it compares the welfare gains of having subsidies for new technologies and new combinations.
-\item Because Figure 1's scale does not show it properly, Figure 2 plots only the new technologies subsidy welfare compared to the baseline welfare. Here we can see that the welfare is increasing in the subsidy.
-\item Figure 3 repeats Figure 2, but for new combinations. It highlights the non-monotonic shape of welfare gains as a function of the subsidy.
+\item The new technology subsidy has positive welfare effects, but it is very low. It was also chosen because of that -- most subsidy values give negative welfare effects. To compare, I used the same subsidy for new technologies. The welfare effect is also positive and much higher, but still very small in percentage terms. There are other new combination subsidy values that yield much better results.
+
+\item Most of the figures are intuitive, and changes happen in the expected direction. One important conclusion is that the cost of inventors does not increase immediately after the subsidy is implemented, which means that the subsidy is not changing too much the configuration of patents that are produced. In fact, the subsidy for new technologies decreases the average amount of technologies produced each year: it creates incentives for inventors in cold product lines to create new technologies, therefore increasing the number of hot product lines -- and inventors in hot product lines are much more likely to do new combinations. This is not true for other values of the subsidy, though.
+
+\item Note also that most of the action is going on because the number of new combinations increases after we subsidize both new combinations \textit{or} new technologies. It just seems that having ideas for new technologies is a very rare event, so its hard to induce any big change by subsidizing this type of patent.
 \end{itemize}
 
-\paragraph{Comments}
-The new combination subsidy basically takes over after a subsidy of about 50\%. My guess is that everyone that would do refinements now switches to new combinations. This increases the welfare gains, but might hurt the growth of consumption if inventors who were doing new technologies revert to new combinations. If this is the case, then the welfare gains might be different if we consider more periods into the future.
+
+\section*{7\% subsidy on new technologies for 50 years}
+
+\begin{itemize}
+\item Figures 1 and 2 show how aggregate variables move with the introduction of a subsidy. Figure 1 shows the whole period, while Figure 2 shows only the years after the introduction of the subsidy.
+\item Figure 3 expands upon this and shows the difference between the value of these aggregate variables with the subsidy and without the subsidy.
+\item Figure 4 and 5 mimic figures 1 and 2 for shares of each type of patent and the number of new technologies produced each year.
+\end{itemize}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=.6]{code/welfare_pp}
-\caption{Welfare gains in percentage points.}
+\includegraphics[scale=.6]{figures/aggregatesNT}
+\caption{Log of aggregate variables over the whole time span.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=.6]{code/welfare_NT}
-\caption{Welfare with new technologies subsidy compared to baseline in absolute values}
+\includegraphics[scale=.6]{figures/aggregates2016NT}
+\caption{Log of aggregate variables starting in 2016.}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[scale=.6]{code/welfare_NC}
-\caption{Welfare with new combinations subsidy compared to baseline in absolute values}
+\includegraphics[scale=.6]{figures/aggregates2016_diffNT}
+\caption{Difference between values with subsidy and without subsidy.}
 \end{figure}
 
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/patentsNT}
+\caption{Evolution of patent type fractions, whole time period.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/patents2016NT}
+\caption{Evolution of patent type fractions, starting in 2016.}
+\end{figure}
+
+\clearpage
+
+\section*{7\% subsidy on new combinations over 50 years.}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/aggregatesNC}
+\caption{Log of aggregate variables over the whole time span.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/aggregates2016NC}
+\caption{Log of aggregate variables starting in 2016.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/aggregates2016_diffNC}
+\caption{Difference between values with subsidy and without subsidy.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/patentsNC}
+\caption{Evolution of patent type fractions, whole time period.}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=.6]{figures/patents2016NC}
+\caption{Evolution of patent type fractions, starting in 2016.}
+\end{figure}
 
 \end{document}

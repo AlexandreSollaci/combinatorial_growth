@@ -3,13 +3,13 @@ close all
 clc
 
 cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
-
-etaH = 0.3; % NT step size
-etaM = 0.07; % NC step size
+rng(10)
+etaH = 0.15; % NT step size
+etaM = 0.06; % NC step size
 etaL = 0; % Refinement step size
-ttau = 500; % shape parameter for ideas distribution
+ttau = 1000; % shape parameter for ideas distribution
 llambda = 1; % alpha (cost) has weibull distribution with scale parameter lambda ...
-kkappa = 5; % and shape parameter kappa
+kkappa = 2; % and shape parameter kappa
 xxi = 200;   % 1/xi is the fraction of feasible combinations
 
 zeta = 0.012; % probability technology line shuts down
@@ -36,9 +36,9 @@ Mmat(1:M0,3) = zeros(M0,1);   % reuse/refinement so far
 Mmat(:,4) = Mmat(:,1).*0 + year;    % birth year
 Mmat(1:M0,5) = ones(M0,1); % technologies are born hot
 
-Tmax = 200;
+Tmax = 180;
 
-nu = 2.8; % chosen so that nrof firms makes avg growth rate is approximately 2%
+nu = 2; % chosen so that nrof firms makes avg growth rate is approximately 2%
 nrofinv = exp(6); % number of inventors, chosen to match initial number of patents
 nroffirms = round(nu*nrofinv); 
 g1 = 0.066; % initial growth rate of patent numbers
@@ -55,7 +55,6 @@ Discounted_utility = zeros(Tmax, 1);
 
 summat = zeros(Tmax + 1,4); % matrix to keep track of fractions of each patent type
 summat(1,:) = [year, 1, 0, 0]; %[year, new tech, new comb, reuse]
-seed = 1702;
 
 %%%%%%%%%%%%% DEFINE STATES
 %3 states: 1-new tech 2-recomb 3-reuse
@@ -314,7 +313,7 @@ else
     T2.moment = {'model'; 'data'};
     T2.new_tech1950 = [M7 ; 0.02];
     T2.new_comb1950 = [M8 ; 0.75];
-    T2.reuse1950 = [M9 ; 0.33];
+    T2.reuse1950 = [M9 ; 0.23];
     T2.new_tech2000 = [M10 ; 0.01];
     T2.new_comb2000 = [M11 ; 0.80];
     T2.reuse2000 = [M12 ; 0.19];
@@ -322,17 +321,17 @@ else
     T3 = table;
     T3.moment = {'model'; 'data'};
     T3.reuse_peak = [M13; 0.55];
-    T3.peak_year = [M14 ; 34];
+    %T3.peak_year = [M14 ; 34];
 
     display(T)
     display(T2)
     display(T3)
 
-    data = [0.4; 0.25; 0.35; 0.03; 0.45; 0.52; 0.02; 0.75; 0.33; 0.01; 0.80; 0.19; 0.55; 34];
-    Summary_stats = [data, M'];
+    data = [0.4; 0.25; 0.35; 0.03; 0.45; 0.52; 0.02; 0.75; 0.33; 0.01; 0.80; 0.19; 0.55];% 34];
+    Summary_stats = [data, M(1:end-1)'];
 
     rowLabels = {'new tech 1850'; 'new comb 1850'; 'reuse 1850'; 'new tech 1900'; 'new comb 1900'; 'reuse 1900'; ...
-        'new tech 1950'; 'new comb 1950'; 'reuse 1950'; 'new tech 2000'; 'new comb 2000'; 'reuse 2000'; 'reuse peak'; 'peak year'};
+        'new tech 1950'; 'new comb 1950'; 'reuse 1950'; 'new tech 2000'; 'new comb 2000'; 'reuse 2000'; 'reuse peak'};% 'peak year'};
     columnLabels = {'Data', 'Model'};
     matrix2latex(Summary_stats, 'tex_files/moments_table.tex', 'rowLabels', rowLabels, 'columnLabels', columnLabels)
 end
