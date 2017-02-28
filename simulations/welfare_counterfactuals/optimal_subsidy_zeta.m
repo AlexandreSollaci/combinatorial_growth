@@ -50,7 +50,7 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-subsidy_vals = [0.01, 0.02, 0.03, 0.04, linspace(.05,1,20)];
+subsidy_vals = [0.01, 0.03, 0.05, 0.1, 0.2, 0.3, 0.4];
 subs_len = length(subsidy_vals);
 subsidy_subs = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
 
