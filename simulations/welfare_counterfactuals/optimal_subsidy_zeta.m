@@ -5,13 +5,14 @@ clc
 %cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.15; % NT step size
-etaM = 0.06; % NC step size
+etaM = 0.075; % NC step size
 etaL = 0; % Refinement step size
-ttau = 1000; % shape parameter for ideas distribution
-llambda = 2; % alpha (cost) has weibull distribution with scale parameter lambda ...
-kkappa = 2; % and shape parameter kappa
-xxi = 200;   % 1/xi is the fraction of feasible combinations
-zeta = 0.012; % probability technology line shuts down
+ttau = 500; % shape parameter for ideas distribution
+phi = 1.05;
+llambda = 1.5; % alpha (cost) has weibull distribution with scale parameter lambda ...
+kkappa = 2;  % and shape parameter kappa
+xxi = 175;   % 1/xi is the fraction of feasible combinations
+zeta = 0.01; % probability technology line shuts down
 ggamma = .6; % match to labor share of GDP
 epsilon = 2; % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
 rr = 0.05; % interest rate
@@ -28,7 +29,7 @@ g2 = 0.02; % final growth rate of patents
 Tmax = 230; % total number of periods
 T_subs = 180; % start subsidy period in 2016
 seed = 10;
-params = v2struct(etaH, etaM, etaL, ttau, llambda, kkappa, xxi, zeta, ggamma, epsilon, rr, nu, nrofinv, g1, g2);
+params = v2struct(etaH, etaM, etaL, ttau, phi, llambda, kkappa, xxi, zeta, ggamma, epsilon, rr, nu, nrofinv, g1, g2);
 
 %% Run simulation with no subsidy
 subsidy_plain = [0,0];
@@ -93,7 +94,7 @@ plot(subsidy_vals, WChangeNT)
 title('Welfare gains (%) associated with subsidy value (CRRA)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_pp_cost01.png')
+saveas(gcf, 'tex_files/figures/welfare_pp_phi.png')
 
 welfare_log_gains_pp = figure(2);
 plot(subsidy_vals, WlogChangeNT)
@@ -101,7 +102,7 @@ plot(subsidy_vals, WlogChangeNT)
 title('Welfare gains (%) associated with subsidy value (Log)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_log_pp_cost01.png')
+saveas(gcf, 'tex_files/figures/welfare_log_pp_phi.png')
 
 
 

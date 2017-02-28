@@ -58,8 +58,8 @@ function [M, F] = compute_moments(summat)
 	    % Peak of reuse fraction
 	    [M13 , M14] = max(summat(:,4)); 
 
-	    F = (M1/0.4 - 1)^2  + (M2/0.25 - 1)^2 + (M4/0.03 - 1)^2 + (M5/0.45 - 1)^2 + (M7/0.02 - 1)^2 + (M8/0.75 - 1)^2 + ...
-	    	(M10/0.01 - 1)^2 + (M11/0.8 - 1)^2 + (M13/0.55 - 1)^2 + (M14/34 - 1)^2 ;
+	    F = (M1-0.4)^2  + (M2-0.25)^2 + (M4-0.03)^2 + (M5-0.45)^2 + (M7-0.02)^2 + (M8-0.75)^2 + ...
+	    	(M10-0.01)^2 + (M11-0.8)^2 + (M13-0.55)^2; % + (M14/34 - 1)^2 ;
 	    % reuse fractions are not independent from other fraction, so not included
 	    M = [M1, M2, M3, M4, M5, M6, M7, M8, M9, M10, M11, M12, M13, M14];
 	end

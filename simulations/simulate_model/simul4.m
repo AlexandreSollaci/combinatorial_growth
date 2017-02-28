@@ -2,19 +2,23 @@ clear
 close all
 clc
 
+% turn on just in time compilation (makes for loops faster)
+feature accel on 
+
 cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
 rng(10)
 etaH = 0.15; % NT step size
-etaM = 0.06; % NC step size
+etaM = 0.075; % NC step size
 etaL = 0; % Refinement step size
-ttau = 1000; % shape parameter for ideas distribution
-llambda = 1; % alpha (cost) has weibull distribution with scale parameter lambda ...
-kkappa = 2; % and shape parameter kappa
-xxi = 200;   % 1/xi is the fraction of feasible combinations
+ttau = 500; % shape parameter for ideas distribution
+phi = 1.05;
+llambda = 1.5; % alpha (cost) has weibull distribution with scale parameter lambda ...
+kkappa = 2;  % and shape parameter kappa
+xxi = 175;   % 1/xi is the fraction of feasible combinations
 
-zeta = 0.012; % probability technology line shuts down
+zeta = 0.01; % probability technology line shuts down
 
-ggamma = .6; % match to labor share of GDP
+ggamma = 0.6; % match to labor share of GDP
 epsilon = 2; % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
 
 rr = 0.05; % interest rate
@@ -68,7 +72,7 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
     remove_line = [];
 
     % add new block of memory to Mmat if needed
-    if( Mt + (blocksize/20) > length(Mmat) )         % less than 10% of blocksize free slots
+    if( Mt + (blocksize/10) > length(Mmat) )         % less than 10% of blocksize free slots
         Mmat(length(Mmat)+1:length(Mmat)+blocksize, :) = zeros(blocksize,5);       % add new BLOCK_SIZE slots
     end
     
@@ -92,7 +96,10 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
     for j=1:Mt
 
         % Draw new ideas and new costs
-        [mstar,aalpha] = modeldraws(j, ttau, llambda, kkappa); % not using seed
+        %[mstar,aalpha] = modeldraws(j, ttau, llambda, kkappa); % not using seed
+        y = rand(2,1); 
+        mstar = ttau*log( (1 + y(1)*exp(phi*j/ttau)) / (1-y(1)) );                     % Inverse of G
+        aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                               % Inverse of weibull CDF
         aalpha1 = aalpha; % new tech cost
         aalpha2 = aalpha; % new comb cost
         % cost of reuse normalized to zero
@@ -113,7 +120,7 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
         end
 
         if rand(1) < zeta
-            remove_line = [remove_line, j]; % variable to store identtity of dead lines
+            remove_line = [remove_line, j]; % variable to store identity of dead lines
         else
             if oldstate(j)<=2  % used to be new technology or new combination
 

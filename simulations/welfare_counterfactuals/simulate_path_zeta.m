@@ -5,7 +5,8 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
     etaH = params.etaH; 
     etaM = params.etaM; 
     etaL = params.etaL; 
-    ttau = params.ttau; 
+    ttau = params.ttau;
+    phi = params.phi; 
     llambda = params.llambda; 
     kkappa = params.kkappa; 
     xxi = params.xxi;   
@@ -25,7 +26,7 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
     M0 = 100; % initial number of technologies
 
     % Preallocate space for Mmat:
-    blocksize = 50*M0;
+    blocksize = 500*M0;
 
     % [ID, n (pool size), z (number of times reused), birth year, number of periods that a tech remains hot]
     Mmat = zeros(blocksize,5);
@@ -94,7 +95,7 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
             % Draw new ideas and new costs
             % [mstar,aalpha] = modeldraws(j, ttau, llambda, kkappa); % not using seed
             y = rand(2,1); 
-            mstar = ttau*log( (1 + y(1)*exp(1.01*j/ttau)) / (1-y(1)) );                     % Inverse of G
+            mstar = ttau*log( (1 + y(1)*exp(phi*j/ttau)) / (1-y(1)) );                     % Inverse of G
             aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                           % Inverse of weibull CDF
             aalpha1 = aalpha*(1 - subsidy(1)); % new tech cost
             aalpha2 = aalpha*(1 - subsidy(2)); % new comb cost
