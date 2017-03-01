@@ -8,13 +8,13 @@ feature accel on
 cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
 rng(10)
 etaH = 0.15; % NT step size
-etaM = 0.075; % NC step size
+etaM = 0.1; % NC step size
 etaL = 0; % Refinement step size
 ttau = 500; % shape parameter for ideas distribution
-phi = 1.05;
-llambda = 1.5; % alpha (cost) has weibull distribution with scale parameter lambda ...
+phi = 1.075;
+llambda = 2; % alpha (cost) has weibull distribution with scale parameter lambda ...
 kkappa = 2;  % and shape parameter kappa
-xxi = 175;   % 1/xi is the fraction of feasible combinations
+xxi = 5;   % 1/xi is the fraction of feasible combinations
 
 zeta = 0.01; % probability technology line shuts down
 
@@ -42,7 +42,7 @@ Mmat(1:M0,5) = ones(M0,1); % technologies are born hot
 
 Tmax = 180;
 
-nu = 2; % chosen so that nrof firms makes avg growth rate is approximately 2%
+nu = 3.1; % chosen so that nrof firms makes avg growth rate is approximately 2%
 nrofinv = exp(6); % number of inventors, chosen to match initial number of patents
 nroffirms = round(nu*nrofinv); 
 g1 = 0.066; % initial growth rate of patent numbers
