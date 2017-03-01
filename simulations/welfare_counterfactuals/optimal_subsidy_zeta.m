@@ -2,6 +2,8 @@ clear
 close all
 clc
 
+feature accel on
+
 %cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.15; % NT step size
@@ -50,7 +52,7 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-subsidy_vals = [0.01, 0.02, 0.03, 0.04, linspace(0.05,1,20)];
+subsidy_vals = [0, 0.01, 0.02, 0.03, 0.04, 0.05, .1, .15];
 subs_len = length(subsidy_vals);
 subsidy_subs = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
 
