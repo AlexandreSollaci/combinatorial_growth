@@ -37,74 +37,76 @@ params = v2struct(etaH, etaM, etaL, ttau, phi, llambda, kkappa, xxi, zeta, ggamm
 subsidy_plain = [0,0];
 result_plain = simulate_path_zeta(Tmax, T_subs, params, subsidy_plain, seed);
 
-% store simulation results
-%Mmat_plain = result_plain.Mmat;
-%summat_plain = result_plain.summat;
-% GDP_plain = result_plain.GDP;
-% Consumption_plain = result_plain.Consumption;
-% inventor_cost_plain = result_plain.inventor_cost;
-% firm_cost_plain = result_plain.firm_cost;
-% policy_cost_plain = result_plain.policy_cost;
-% nrofpatents_plain = result_plain.nrofpatents;
-% quality_plain = result_plain.quality;
-% Growth_plain = result_plain.Growth;
 Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
 subsidy_vals = [0, 0.01, 0.02, 0.03, 0.04, 0.05, .1, .15];
 subs_len = length(subsidy_vals);
-subsidy_subs = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
 
-% initialize matrices
-% GDP_subs = zeros(Tmax, subs_len);
-% Consumption_subs = zeros(Tmax, subs_len);
-% inventor_cost_subs = zeros(Tmax, subs_len);
-% firm_cost_subs = zeros(Tmax, subs_len);
-% policy_cost_subs = zeros(Tmax, subs_len);
-% nrofpatents_subs = zeros(Tmax, subs_len);
-% %quality_subs = result_subs.quality;
-% Growth_subs = zeros(Tmax, subs_len);
-Welfare_subs = zeros(subs_len,1);
-Welfare_log_subs = zeros(subs_len,1);
+% new technologies
+subsidy_substech = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
+Welfare_substech = zeros(subs_len,1);
+Welfare_log_substech = zeros(subs_len,1);
 
 for i = 1:subs_len
-	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_subs(i,:), seed);
+	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_substech(i,:), seed);
 
-	% store simulation results
-	% GDP_subs(:,i) = result_subs.GDP;
-	% Consumption_subs(:,i) = result_subs.Consumption;
-	% inventor_cost_subs(:,i) = result_subs.inventor_cost;
-	% firm_cost_subs(:,i) = result_subs.firm_cost;
-	% policy_cost_subs(:,i) = result_subs.policy_cost;
-	% nrofpatents_subs(:,i) = result_subs.nrofpatents;
-	% %quality_subs = result_subs.quality;
-	% Growth_subs(:,i) = result_subs.Growth;
-	Welfare_subs(i) = result_subs.Welfare;
-	Welfare_log_subs(i) = result_subs.Welfare_log;
+	Welfare_substech(i) = result_subs.Welfare;
+	Welfare_log_substech(i) = result_subs.Welfare_log;
+end
+
+% new combinations
+subsidy_subscomb = [zeros(subs_len,1), subsidy_vals']; % ; zeros(subs_len,1), subsidy_vals'];
+Welfare_subscomb = zeros(subs_len,1);
+Welfare_log_subscomb = zeros(subs_len,1);
+
+for i = 1:subs_len
+	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_subscomb(i,:), seed);
+
+	Welfare_subscomb(i) = result_subs.Welfare;
+	Welfare_log_subscomb(i) = result_subs.Welfare_log;
+end
+
+% both
+subsidy_subsboth = [subsidy_vals', subsidy_vals']; % ; zeros(subs_len,1), subsidy_vals'];
+Welfare_subsboth = zeros(subs_len,1);
+Welfare_log_subboth = zeros(subs_len,1);
+
+for i = 1:subs_len
+	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_subsboth(i,:), seed);
+
+	Welfare_subsboth(i) = result_subs.Welfare;
+	Welfare_log_subsboth(i) = result_subs.Welfare_log;
 end
 
 periods = 1836 + linspace(1,Tmax,Tmax);
 periods_subs = 1836 + T_subs + linspace(1,Tmax-T_subs,Tmax-T_subs)';
 
-WChangeNT = sign(Welfare_subs).*(Welfare_subs - Welfare_plain)/Welfare_plain;
-WlogChangeNT = sign(Welfare_log_subs).*(Welfare_log_subs - Welfare_log_plain)/Welfare_log_plain;
+WChangeNT = sign(Welfare_substech).*(Welfare_substech - Welfare_plain)/Welfare_plain;
+WlogChangeNT = sign(Welfare_log_substech).*(Welfare_log_substech - Welfare_log_plain)/Welfare_log_plain;
+
+WChangeNC = sign(Welfare_subscomb).*(Welfare_subscomb - Welfare_plain)/Welfare_plain;
+WlogChangeNC = sign(Welfare_log_subscomb).*(Welfare_log_subscomb - Welfare_log_plain)/Welfare_log_plain;
+
+WChangeTC = sign(Welfare_subsboth).*(Welfare_subsboth - Welfare_plain)/Welfare_plain;
+WlogChangeTC = sign(Welfare_log_subsboth).*(Welfare_log_subsboth - Welfare_log_plain)/Welfare_log_plain;
 
 welfare_gains_pp = figure(1);
-plot(subsidy_vals, WChangeNT)
-%legend('New technologies', 'New combination', 'location', 'Northeast')
+plot(subsidy_vals, WChangeNT, subsidy_vals, WChangeNC, subsidy_vals, WChangeTC)
+legend('New technologies', 'New combination', 'Both', 'location', 'Northeast')
 title('Welfare gains (%) associated with subsidy value (CRRA)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_pp_phi.png')
+saveas(gcf, 'tex_files/figures/welfare_pp_phi_3ways.png')
 
 welfare_log_gains_pp = figure(2);
-plot(subsidy_vals, WlogChangeNT)
-%legend('New technologies', 'New combination', 'location', 'Northeast')
+plot(subsidy_vals, WlogChangeNT, subsidy_vals, WlogChangeNC, subsidy_vals, WlogChangeTC)
+legend('New technologies', 'New combination', 'Both', 'location', 'Northeast')
 title('Welfare gains (%) associated with subsidy value (Log)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_log_pp_phi.png')
+saveas(gcf, 'tex_files/figures/welfare_log_pp_phi_3ways.png')
 
 
 
