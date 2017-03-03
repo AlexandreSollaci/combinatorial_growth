@@ -41,20 +41,20 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-subsidy_vals = [0, 0.01, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3];
+subsidy_vals = [0, linspace(.05,1,20)];
 subs_len = length(subsidy_vals);
 
-% new technologies
-subsidy_substech = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
-Welfare_substech = zeros(subs_len,1);
-Welfare_log_substech = zeros(subs_len,1);
-
-for i = 1:subs_len
-	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_substech(i,:), seed);
-
-	Welfare_substech(i) = result_subs.Welfare;
-	Welfare_log_substech(i) = result_subs.Welfare_log;
-end
+% % new technologies
+% subsidy_substech = [subsidy_vals', zeros(subs_len,1)]; % ; zeros(subs_len,1), subsidy_vals'];
+% Welfare_substech = zeros(subs_len,1);
+% Welfare_log_substech = zeros(subs_len,1);
+% 
+% for i = 1:subs_len
+% 	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_substech(i,:), seed);
+% 
+% 	Welfare_substech(i) = result_subs.Welfare;
+% 	Welfare_log_substech(i) = result_subs.Welfare_log;
+% end
 
 % new combinations
 subsidy_subscomb = [zeros(subs_len,1), subsidy_vals']; % ; zeros(subs_len,1), subsidy_vals'];
@@ -68,63 +68,77 @@ for i = 1:subs_len
 	Welfare_log_subscomb(i) = result_subs.Welfare_log;
 end
 
-% both
-subsidy_subsboth = [subsidy_vals', subsidy_vals']; % ; zeros(subs_len,1), subsidy_vals'];
-Welfare_subsboth = zeros(subs_len,1);
-Welfare_log_subsboth = zeros(subs_len,1);
-
-for i = 1:subs_len
-	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_subsboth(i,:), seed);
-
-	Welfare_subsboth(i) = result_subs.Welfare;
-	Welfare_log_subsboth(i) = result_subs.Welfare_log;
-end
-
-periods = 1836 + linspace(1,Tmax,Tmax);
-periods_subs = 1836 + T_subs + linspace(1,Tmax-T_subs,Tmax-T_subs)';
-
-WChangeNT = sign(Welfare_substech).*(Welfare_substech - Welfare_plain)/Welfare_plain;
-WlogChangeNT = sign(Welfare_log_substech).*(Welfare_log_substech - Welfare_log_plain)/Welfare_log_plain;
+% % both
+% subsidy_subsboth = [subsidy_vals', subsidy_vals']; % ; zeros(subs_len,1), subsidy_vals'];
+% Welfare_subsboth = zeros(subs_len,1);
+% Welfare_log_subsboth = zeros(subs_len,1);
+% 
+% for i = 1:subs_len
+% 	result_subs = simulate_path_zeta(Tmax, T_subs, params, subsidy_subsboth(i,:), seed);
+% 
+% 	Welfare_subsboth(i) = result_subs.Welfare;
+% 	Welfare_log_subsboth(i) = result_subs.Welfare_log;
+% end
+% 
+% periods = 1836 + linspace(1,Tmax,Tmax);
+% periods_subs = 1836 + T_subs + linspace(1,Tmax-T_subs,Tmax-T_subs)';
+% 
+% WChangeNT = sign(Welfare_substech).*(Welfare_substech - Welfare_plain)/Welfare_plain;
+% WlogChangeNT = sign(Welfare_log_substech).*(Welfare_log_substech - Welfare_log_plain)/Welfare_log_plain;
 
 WChangeNC = sign(Welfare_subscomb).*(Welfare_subscomb - Welfare_plain)/Welfare_plain;
 WlogChangeNC = sign(Welfare_log_subscomb).*(Welfare_log_subscomb - Welfare_log_plain)/Welfare_log_plain;
 
-WChangeTC = sign(Welfare_subsboth).*(Welfare_subsboth - Welfare_plain)/Welfare_plain;
-WlogChangeTC = sign(Welfare_log_subsboth).*(Welfare_log_subsboth - Welfare_log_plain)/Welfare_log_plain;
-
-welfare_gains_pp = figure(1);
-plot(subsidy_vals, WChangeNT, '--r', subsidy_vals, WChangeNC, '-.b', subsidy_vals, WChangeTC, 'k')
-legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
-title('Welfare gains (%) associated with subsidy value (CRRA)')
-xlabel('Subsidy value')
-ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_pp_phi_3ways.png')
-
-welfare_log_gains_pp = figure(2);
-plot(subsidy_vals, WlogChangeNT, '--r', subsidy_vals, WlogChangeNC, '-.b', subsidy_vals, WlogChangeTC, 'k')
-legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
-title('Welfare gains (%) associated with subsidy value (Log)')
-xlabel('Subsidy value')
-ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_log_pp_3ways.png')
-
-welfare_gains_pp_NT = figure(3);
-plot(subsidy_vals, WChangeNT, 'k')
-%legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
-title('Welfare gains (%) associated with subsidy value (CRRA)')
-xlabel('Subsidy value')
-ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_pp_NT.png')
-
+% WChangeTC = sign(Welfare_subsboth).*(Welfare_subsboth - Welfare_plain)/Welfare_plain;
+% WlogChangeTC = sign(Welfare_log_subsboth).*(Welfare_log_subsboth - Welfare_log_plain)/Welfare_log_plain;
+% 
 % welfare_gains_pp = figure(1);
-% plot(subsidy_vals, WChangeNC)
+% plot(subsidy_vals, WChangeNT, '--r', subsidy_vals, WChangeNC, '-.b', subsidy_vals, WChangeTC, 'k')
+% legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+% title('Welfare gains (%) associated with subsidy value (CRRA)')
+% xlabel('Subsidy value')
+% ylabel('Welfare gain')
+% saveas(gcf, 'tex_files/figures/welfare_pp_phi_3ways.png')
+% 
+% welfare_log_gains_pp = figure(2);
+% plot(subsidy_vals, WlogChangeNT, '--r', subsidy_vals, WlogChangeNC, '-.b', subsidy_vals, WlogChangeTC, 'k')
+% legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+% title('Welfare gains (%) associated with subsidy value (Log)')
+% xlabel('Subsidy value')
+% ylabel('Welfare gain')
+% saveas(gcf, 'tex_files/figures/welfare_log_pp_phi_3ways.png')
+% 
+% welfare_gains_pp_NT = figure(3);
+% plot(subsidy_vals, WChangeNT, 'k')
 % %legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
 % title('Welfare gains (%) associated with subsidy value (CRRA)')
 % xlabel('Subsidy value')
 % ylabel('Welfare gain')
-% saveas(gcf, 'tex_files/figures/welfare_pp_phi_NC.png')
+% saveas(gcf, 'tex_files/figures/welfare_pp_NT.png')
+% 
+% welfare_log_gains_pp_NT = figure(4);
+% plot(subsidy_vals, WlogChangeNT, 'k')
+% %legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+% title('Welfare gains (%) associated with subsidy value (Log)')
+% xlabel('Subsidy value')
+% ylabel('Welfare gain')
+% saveas(gcf, 'tex_files/figures/welfare_log_pp_log_NT.png')
 
+welfare_gains_pp = figure(1);
+plot(subsidy_vals, WChangeNC)
+%legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+title('Welfare gains (%) associated with subsidy value (CRRA)')
+xlabel('Subsidy value')
+ylabel('Welfare gain')
+saveas(gcf, 'tex_files/figures/welfare_pp_phi_NC.png')
 
+welfare_gains_pp = figure(1);
+plot(subsidy_vals, WChangeNC)
+%legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+title('Welfare gains (%) associated with subsidy value (CRRA)')
+xlabel('Subsidy value')
+ylabel('Welfare gain')
+saveas(gcf, 'tex_files/figures/welfare_pp_phi_NC.png')
 
 
 
