@@ -132,7 +132,7 @@ xlabel('Subsidy value')
 ylabel('Welfare gain')
 saveas(gcf, 'tex_files/figures/welfare_pp_phi_NC.png')
 
-welfare_log_gains_pp = figure(1);
+welfare_log_gains_pp = figure(2);
 plot(subsidy_vals, WlogChangeNC)
 %legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
 title('Welfare gains (%) associated with subsidy value (Log)')
