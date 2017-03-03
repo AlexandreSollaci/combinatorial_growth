@@ -7,15 +7,15 @@ feature accel on
 %cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.15; % NT step size
-etaM = 0.075; % NC step size
+etaM = 0.1; % NC step size
 etaL = 0; % Refinement step size
 ttau = 500; % shape parameter for ideas distribution
-phi = 1.05;
-llambda = 1.5; % alpha (cost) has weibull distribution with scale parameter lambda ...
+phi = 1.075;
+llambda = 2; % alpha (cost) has weibull distribution with scale parameter lambda ...
 kkappa = 2;  % and shape parameter kappa
-xxi = 175;   % 1/xi is the fraction of feasible combinations
+xxi = 5;   % 1/xi is the fraction of feasible combinations
 zeta = 0.01; % probability technology line shuts down
-ggamma = .6; % match to labor share of GDP
+ggamma = 0.6; % match to labor share of GDP
 epsilon = 2; % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
 rr = 0.05; % interest rate
 bbeta = 1/(1+rr); % intertemporal discount factor
@@ -41,7 +41,7 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-subsidy_vals = [0, 0.01, 0.03, 0.05, .1, .15, .2, .3];
+subsidy_vals = [0, 0.01, 0.03, 0.05, 0.1, 0.15, 0.2, 0.3];
 subs_len = length(subsidy_vals);
 
 % new technologies
@@ -93,23 +93,36 @@ WChangeTC = sign(Welfare_subsboth).*(Welfare_subsboth - Welfare_plain)/Welfare_p
 WlogChangeTC = sign(Welfare_log_subsboth).*(Welfare_log_subsboth - Welfare_log_plain)/Welfare_log_plain;
 
 welfare_gains_pp = figure(1);
-plot(subsidy_vals, WChangeNT, '--r', subsidy_vals, WChangeNC, '.-b', subsidy_vals, WChangeTC, ')
-legend('New technologies', 'New combination', 'Both', 'location', 'Northeast')
+plot(subsidy_vals, WChangeNT, '--r', subsidy_vals, WChangeNC, '-.b', subsidy_vals, WChangeTC, 'k')
+legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
 title('Welfare gains (%) associated with subsidy value (CRRA)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
 saveas(gcf, 'tex_files/figures/welfare_pp_phi_3ways.png')
 
 welfare_log_gains_pp = figure(2);
-plot(subsidy_vals, WlogChangeNT, subsidy_vals, WlogChangeNC, subsidy_vals, WlogChangeTC)
-legend('New technologies', 'New combination', 'Both', 'location', 'Northeast')
+plot(subsidy_vals, WlogChangeNT, '--r', subsidy_vals, WlogChangeNC, '-.b', subsidy_vals, WlogChangeTC, 'k')
+legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
 title('Welfare gains (%) associated with subsidy value (Log)')
 xlabel('Subsidy value')
 ylabel('Welfare gain')
-saveas(gcf, 'tex_files/figures/welfare_log_pp_phi_3ways.png')
+saveas(gcf, 'tex_files/figures/welfare_log_pp_3ways.png')
 
+welfare_gains_pp_NT = figure(3);
+plot(subsidy_vals, WChangeNT, 'k')
+%legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+title('Welfare gains (%) associated with subsidy value (CRRA)')
+xlabel('Subsidy value')
+ylabel('Welfare gain')
+saveas(gcf, 'tex_files/figures/welfare_pp_NT.png')
 
-
+% welfare_gains_pp = figure(1);
+% plot(subsidy_vals, WChangeNC)
+% %legend('New technologies', 'New combination', 'Both', 'location', 'Northwest')
+% title('Welfare gains (%) associated with subsidy value (CRRA)')
+% xlabel('Subsidy value')
+% ylabel('Welfare gain')
+% saveas(gcf, 'tex_files/figures/welfare_pp_phi_NC.png')
 
 
 
