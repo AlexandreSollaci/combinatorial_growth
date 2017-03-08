@@ -96,7 +96,7 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
             % [mstar,aalpha] = modeldraws(j, ttau, llambda, kkappa); % not using seed
             y = rand(2,1); 
             mstar = ttau*log( (1 + y(1)*exp(phi*j/ttau)) / (1-y(1)) );                     % Inverse of G
-            aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                           % Inverse of weibull CDF
+            aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                               % Inverse of weibull CDF
             aalpha1 = aalpha*(1 - subsidy(1)); % new tech cost
             aalpha2 = aalpha*(1 - subsidy(2)); % new comb cost
             % cost of reuse normalized to zero
@@ -130,8 +130,9 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
                         newtech = 1; 
 
                     % new combinations
-                    elseif (mstar <= Mt && (aalpha2 < PPi*(etaM - etaL) ||  switchtocold(j) == 0  ) ) || ...
-                           (mstar > Mt && (1 - switchtocold(j))*(aalpha2 > PPi*(etaH - etaM)) > 0) 
+                    elseif (mstar <= Mt && (aalpha2 < PPi*(etaM - etaL) ||  switchtocold(j) == 0  )) || ...
+                       (mstar > Mt &&  ( (switchtocold(j)==0)*(aalpha1 > PPi*(etaH - etaM)) || ...
+                       (switchtocold(j)==1)*(aalpha2 < PPi*(etaM - etaL)) )  
                         state(j) = 2;
                         Mmat(j,2) = Mmat(j,2) + 1;
                         Mmat(j,3) = 0;

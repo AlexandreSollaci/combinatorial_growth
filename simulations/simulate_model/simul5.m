@@ -122,7 +122,7 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
         if rand(1) < zeta
             remove_line = [remove_line, j]; % variable to store identity of dead lines
         else
-            if oldstate(j)<=2  % used to be new technology or new combination
+            if oldstate(j)<=1  % used to be new technology
 
                 % new technology
                 if mstar > Mt && aalpha1 < switchtocold(j)*PPi*(etaH - etaL) + (1-switchtocold(j))*PPi*(etaH - etaM)
@@ -142,12 +142,12 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
                     newcomb = 1;
                 % reuse
                 else
-                    state(j) = switchtocold(j)*3 + (1-switchtocold(j))*2;
+                    state(j) = 3;
                     Mmat(j,3) = switchtocold(j)*(Mmat(j,3) + 1) + (1-switchtocold(j))*0;
                     reuse = 1;
                 end
 
-            else %  oldstate(j) == 3   % ==> used to be refinement
+            else %  oldstate(j) > 1   % ==> used to be refinement or new combinaton
 
                 % new technology
                 if mstar > Mt && aalpha1 < PPi*(etaH - etaL) 
