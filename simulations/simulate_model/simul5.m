@@ -134,8 +134,8 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
 
                 % new combinations
                 elseif (mstar <= Mt && (aalpha2 < PPi*(etaM - etaL) ||  switchtocold(j) == 0  )) || ...
-                       (mstar > Mt &&  ( (switchtocold(j)==0)*(aalpha1 > PPi*(etaH - etaM)) || ...
-                       (switchtocold(j)==1)*(aalpha2 < PPi*(etaM - etaL)) ) 
+                   (mstar > Mt && ( (switchtocold(j)==0 && aalpha1 > PPi*(etaH - etaM)) || ...
+                   (switchtocold(j)==1 && aalpha2 < PPi*(etaM - etaL)) )) 
                     state(j) = 2;
                     Mmat(j,2) = Mmat(j,2) + 1;
                     Mmat(j,3) = 0;
