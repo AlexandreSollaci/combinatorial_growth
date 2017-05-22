@@ -1,4 +1,7 @@
-function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, seed)
+
+% Subsidy is now a lump-sum, instead od ad valorem.
+
+function return_vars = simulate_path_ls(Tmax, T_subs, params, subsidy_vec, seed)
 
     rng(seed)
 
@@ -97,8 +100,8 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
             y = rand(2,1); 
             mstar = ttau*log( (1 + y(1)*exp(phi*j/ttau)) / (1-y(1)) );                     % Inverse of G
             aalpha = llambda*(- log(1 - y(2)) )^(1/kkappa) ;                               % Inverse of weibull CDF
-            aalpha1 = aalpha*(1 - subsidy(1)); % new tech cost
-            aalpha2 = aalpha*(1 - subsidy(2)); % new comb cost
+            aalpha1 = aalpha - subsidy(1); % new tech cost
+            aalpha2 = aalpha - subsidy(2); % new comb cost
             % cost of reuse normalized to zero
 
             % initalize patent type counters
@@ -180,7 +183,7 @@ function return_vars = simulate_path_zeta(Tmax, T_subs, params, subsidy_vec, see
             patent_cost(j) = mmu(j)*(aalpha1*newtech + aalpha2*newcomb*(1-switchtocold(j)) ); % if product line if hot, new comb is free
 
             % cost of providing a subsidy for inventor's costs
-            subsidy_cost(j) = mmu(j)*aalpha*( subsidy(1)*newtech + subsidy(2)*newcomb*(1-switchtocold(j)) ) ;
+            subsidy_cost(j) = mmu(j)*( subsidy(1)*newtech + subsidy(2)*newcomb*(1-switchtocold(j)) ) ;
         end
 
         % remove product lines that died

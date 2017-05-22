@@ -5,7 +5,7 @@ clc
 % turn on just in time compilation (makes for loops faster)
 feature accel on 
 
-%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
+cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
 rng(10)
 etaH = 0.15; % NT step size
 etaM = 0.1; % NC step size
@@ -27,10 +27,10 @@ LL = 1; % production worker
 PPi = ggamma/(1-bbeta); % constant part of the price of innovation
 
 year = 1836;
-M0 = 100; %initial number of technologies
+M0 = 1; %initial number of technologies
 
 % Preallocate space for Mmat:
-blocksize = 50*M0;
+blocksize = 5000;
 
 % [ID, n (pool size), z (number of times reused), birth year, number of periods that a tech remains hot]
 Mmat = zeros(blocksize,5);
@@ -134,16 +134,17 @@ for t = 1:Tmax  % number of years of iteration. Here 200 years
 
                 % new combinations
                 elseif (mstar <= Mt && (aalpha2 < PPi*(etaM - etaL) ||  switchtocold(j) == 0  )) || ...
-                   (mstar > Mt && ( (switchtocold(j)==0 && aalpha1 > PPi*(etaH - etaM)) || ...
-                   (switchtocold(j)==1 && aalpha2 < PPi*(etaM - etaL)) )) 
+                   (mstar > Mt && ( (switchtocold(j)==0 && aalpha1 > PPi*(etaH - etaM)) || (switchtocold(j)==1 && aalpha2 < PPi*(etaM - etaL))) ) 
                     state(j) = 2;
                     Mmat(j,2) = Mmat(j,2) + 1;
                     Mmat(j,3) = 0;
                     newcomb = 1;
                 % reuse
                 else
-                    state(j) = switchtocold(j)*3 + (1-switchtocold(j))*2;
-                    Mmat(j,3) = switchtocold(j)*(Mmat(j,3) + 1) + (1-switchtocold(j))*0;
+                    % state(j) = switchtocold(j)*3 + (1-switchtocold(j))*2;
+                    % Mmat(j,3) = switchtocold(j)*(Mmat(j,3) + 1) + (1-switchtocold(j))*0;
+                    state(j) = 3;
+                    Mmat(j,3) = Mmat(j,3) + 1;
                     reuse = 1;
                 end
 
