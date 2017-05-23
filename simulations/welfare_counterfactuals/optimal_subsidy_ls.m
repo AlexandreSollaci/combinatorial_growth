@@ -30,7 +30,7 @@ g2 = 0.02; % final growth rate of patents
 % define parameters for iterations
 Tmax = 50; % total number of periods
 T_subs = 30; % start subsidy period in 2016
-seed = 1702;
+seed = 10;
 params = v2struct(etaH, etaM, etaL, ttau, phi, llambda, kkappa, xxi, zeta, ggamma, epsilon, rr, nu, nrofinv, g1, g2);
 
 %% Run simulation with no subsidy
