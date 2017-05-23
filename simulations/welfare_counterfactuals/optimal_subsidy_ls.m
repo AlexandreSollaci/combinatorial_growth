@@ -4,7 +4,7 @@ clc
 
 feature accel on
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/welfare_counterfactuals/')
 
 etaH = 0.15; % NT step size
 etaM = 0.015; % NC step size
@@ -41,7 +41,8 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-subsidy_vals = linspace(0,etaH,5);
+%subsidy_vals = linspace(0,etaH,5);
+subsidy_vals = linspace(0,.3,10);
 subs_len = length(subsidy_vals);
 
 % new technologies

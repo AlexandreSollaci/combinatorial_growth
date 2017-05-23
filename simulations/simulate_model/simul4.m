@@ -5,7 +5,7 @@ clc
 % turn on just in time compilation (makes for loops faster)
 feature accel on 
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/simulate_model/')
 rng(10)
 etaH = 0.15; % NT step size
 etaM = 0.1; % NC step size
