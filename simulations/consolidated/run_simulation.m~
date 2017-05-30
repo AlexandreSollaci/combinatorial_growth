@@ -30,14 +30,14 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
-Tbase = 10;            % number of periods to run baseline simulation
+Tbase = 180;            % number of periods to run baseline simulation
 Tsubs = 10;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
 
 % Matrix to keep track of state of each product line
-M0 = 10;                %initial number of technologies
+M0 = 1;                 %initial number of technologies
 % [ID, n (pool size), z (number of times reused), birth year, number of periods that a tech remains hot]
 Mmat0 = zeros(M0,5);
 Mmat0(1:M0,1) = 1:M0;                % m ID
@@ -171,16 +171,13 @@ ylabel('Number of patents (logs)')
 saveas(gcf, 'figures/num_pats.png')
 
 figure(4)
-plot(patent_shares(:,1), patent_shares(:,2), '-k', 'LineWidth', 1)
-hold on
-plot(patent_shares(:,1),patent_shares(:,3), '--k', 'LineWidth', 1)
-plot(patent_shares(:,1),patent_shares(:,4), '-^k', 'LineWidth', 1, 'MarkerSize', 3) 
-xlim([beg_year-1, beg_year+Tmax])
+plot(patent_shares(:,1), patent_shares(:,2), '-k', 'LineWidth',2, patent_shares(:,1),patent_shares(:,3), '--k',...
+    'LineWidth', 2, patent_shares(:,1),patent_shares(:,4), '-^k', 'Line) 
+xlim([beg_year, beg_year+Tmax])
 xlabel('Year')
 ylabel('Patent Shares')
 legend('New technologies', 'New combinations', 'Refinements')
 title('Fraction of patents by nature of innovation')
-hold off
 saveas(gcf, 'figures/patents.png')
 
 % Welfare gains with subsidy

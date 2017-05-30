@@ -200,7 +200,8 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
         policy_cost(t) = sum(subsidy_cost*mean(quality));
         
         consumption(t) = GDP(t) - inventor_cost(t) - firm_cost(t) - policy_cost(t);
-        discounted_utility(t) = beta^t * consumption(t)^(1-epsilon) / (1-epsilon) ;
+        %discounted_utility(t) = beta^t * (consumption(t)^(1-epsilon) - 1)/ (1-epsilon) ;
+        discounted_utility(t) = beta^t * log(consumption(t)) ;
 
         % compute total number of patents by category
         nrofnewtech = sum(patent_type(:,1));
@@ -216,7 +217,7 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
             patmat(t,2)= nrofnewtech/nrofpatents(t);    % fraction of new tech
             patmat(t,3)= nrofnewcomb/nrofpatents(t);    % fraction of new combo
             patmat(t,4)= nrofreuse/nrofpatents(t);      % fraction of reuse
-        elseif nrofpatents(t) == 0 & t > 1 
+        elseif nrofpatents(t) == 0 && t > 1 
             patmat(t,:) = patmat(t-1,:);                % If all product lines die, no patents are created
         else
             patmat(t,:) = [year, 1, 0, 0];

@@ -28,8 +28,8 @@ g1 = 0.066; % initial growth rate of patent numbers
 g2 = 0.02; % final growth rate of patents
 
 % define parameters for iterations
-Tmax = 50; % total number of periods
-T_subs = 30; % start subsidy period in 2016
+Tmax = 230; % total number of periods
+T_subs = 180; % start subsidy period in 2016
 seed = 10;
 params = v2struct(etaH, etaM, etaL, ttau, phi, llambda, kkappa, xxi, zeta, ggamma, epsilon, rr, nu, nrofinv, g1, g2);
 
@@ -41,8 +41,8 @@ Welfare_plain = result_plain.Welfare;
 Welfare_log_plain = result_plain.Welfare_log;
 
 %% Run simulation with subsidy
-%subsidy_vals = linspace(0,etaH,5);
-subsidy_vals = linspace(0,.3,10);
+subsidy_vals = linspace(0,etaH,5);
+%subsidy_vals = linspace(0,.3,10);
 subs_len = length(subsidy_vals);
 
 % new technologies
