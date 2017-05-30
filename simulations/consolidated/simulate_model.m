@@ -1,4 +1,4 @@
-function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summary_matrix, patent_matrix, tech_state, subsidy, seed)
+function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summary_matrix, patent_matrix, tech_state, prod_quality, subsidy, seed)
 
     % turn on just in time compilation (makes for loops faster)
     feature accel on 
@@ -33,13 +33,13 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     Mmat = summary_matrix;
     patmat = patent_matrix;
     state = tech_state;
+    quality = prod_quality;
 
     subsidyNT = subsidy(1);
     subsidyNC = subsidy(2);
 
     blocksize = 5000; % preallocate space for matrices
 
-    quality = ones(nroffirms,1); % initial quality of patents = 1
     nrofpatents = zeros(Tmax, 1);
     growth = zeros(Tmax, 1);
     GDP = zeros(Tmax, 1);

@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
+cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
 
 rng(10)
 
@@ -30,7 +30,7 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
-Tbase = 10;            % number of periods to run baseline simulation
+Tbase = 180;            % number of periods to run baseline simulation
 Tsubs = 10;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
@@ -54,6 +54,10 @@ patmat1 = zeros(Tsubs,4);
 % state of product line: 1-new tech 2-recomb 3-reuse
 state0 = zeros(1,M0);
 state0(1:M0) = 1;
+
+% initial quality of product lines (= 1)
+nroffirms = round(nu*beg_inv); 
+quality0 = ones(nroffirms,1);
 
 % Simulate Model
 
@@ -85,7 +89,7 @@ welfare_subs = zeros(2, num_simul, length(subsidy));
 
 for s = 1:num_simul
     seed1 = 1000*rand;
-    model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, [0 0], seed1);
+    model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, quality0, [0 0], seed1);
 
     Mmat = model_plain.Mmat;
     state = model_plain.state;
@@ -94,7 +98,7 @@ for s = 1:num_simul
 
     seed2 = 1000*rand;
     
-    model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, [0 0], seed2);
+    model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, [0 0], seed2);
 
     % In period 0, all ideas are new.
     patmat(:, :, s) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_0.patmat];
@@ -109,7 +113,7 @@ for s = 1:num_simul
 
     for v = 1:length(subsidy)
 
-        model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, subsidy(v,:), seed2);
+        model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, subsidy(v,:), seed2);
 
         patmat_subs(:,:,s,v) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_1.patmat];
         nrofpatents_subs(:,s,v) = [model_plain.nrofpatents; model_subs_1.nrofpatents];
