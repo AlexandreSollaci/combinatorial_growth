@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
 
 rng(10)
 
@@ -18,12 +18,12 @@ kappa = 2;              % and shape parameter kappa
 xi = 5;                 % 1/xi is the fraction of feasible combinations
 zeta = 0.01;            % probability technology line shuts down
 gamma = 0.6;            % match to labor share of GDP
-epsilon = 2;            % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
+epsilon = 2;            % Elasticity of substitution
 beta = 1/(1.05);        % intertemporal discount factor
 Pi = gamma/(1-beta);    % constant part of the price of innovation
-nu = 3.1;               % ratio of firms to inventors; chosen so that nrof firms makes avg growth rate is approximately 2%
+nu = 3.1;               % ratio of firms to inventors
 g1 = 0.066;             % initial growth rate of patent numbers
-g2 = 0.02;              % final growth rate of patents
+g2 = 0.02;              % final growth rate of patent numbers
 
 % store parameters
 params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, epsilon, beta, Pi, nu, g1, g2);
@@ -31,7 +31,7 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
-Tsubs = 10;             % number of periods to run subsidy simulation
+Tsubs = 20;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
@@ -72,10 +72,9 @@ policy_cost = zeros(Tmax, num_simul);
 nrofpatents = zeros(Tmax, num_simul);
 welfare = zeros(2, num_simul);
 
-subsidy_vals = [.05 .1 .2 .3];
+subsidy_vals = [.05 .1 .15 .2];
 subsidy = [subsidy_vals' zeros(length(subsidy_vals),1); ...
-            zeros(length(subsidy_vals),1) subsidy_vals';...
-            subsidy_vals' subsidy_vals']; % subsidy for [new tech, new comb]
+            zeros(length(subsidy_vals),1) subsidy_vals']; % subsidy for [new tech, new comb]
 
 patmat_subs = zeros(Tmax+1, 4, num_simul, length(subsidy));
 growth_subs = zeros(Tmax, num_simul, length(subsidy));
@@ -101,7 +100,7 @@ for s = 1:num_simul
     model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, [0 0], seed2);
 
     % In period 0, all ideas are new.
-    patmat(:, :, s) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_0.patmat];
+    patmat(:,:,s) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_0.patmat];
     nrofpatents(:,s) = [model_plain.nrofpatents; model_subs_0.nrofpatents];
     consumption(:,s) = [model_plain.consumption; model_subs_0.consumption];
     GDP(:,s) = [model_plain.GDP; model_subs_0.GDP];
@@ -126,6 +125,8 @@ for s = 1:num_simul
         welfare_subs(:,s,v) = [model_plain.welfare; model_subs_1.welfare];
 
     end
+    
+    display(['SIMULATION NUMBER ' num2str(s)])
 end
 
 patent_shares = mean(patmat,3);
@@ -191,19 +192,18 @@ saveas(gcf, 'figures/patents.png')
 
 welfareNT = squeeze(welfare_subs(:,:,1:length(subsidy_vals)));
 welfareNC = squeeze(welfare_subs(:,:,length(subsidy_vals)+1:2*length(subsidy_vals)));
-welfareBOTH = squeeze(welfare_subs(:,:,2*length(subsidy_vals)+1:end));
+%welfareBOTH = squeeze(welfare_subs(:,:,2*length(subsidy_vals)+1:end));
 
 Delta_welfareNT = (welfareNT - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
 Delta_welfareNC = (welfareNC - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
-Delta_welfareBOTH = (welfareBOTH - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
+%Delta_welfareBOTH = (welfareBOTH - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
 
 figure(5)
-plot([0,subsidy_vals], [0,Delta_welfareNT(2,:)], '-k', [0,subsidy_vals], [0,Delta_welfareNC(2,:)], ...
-    '--k', [0,subsidy_vals], [0,Delta_welfareBOTH(2,:)], '-^k')
+plot([0,subsidy_vals], [0,Delta_welfareNT(2,:)], '-k', [0,subsidy_vals], [0,Delta_welfareNC(2,:)], '--k')
 title('Welfare Gains from Subsidy')
 ylabel('Welfare gains (percentage terms, relative to no subsidy)')
 xlabel('Subsidy Value')
-legend('New Technologies', 'New Combinations', 'Both', 'location', 'Northwest')
+legend('New Technologies', 'New Combinations', 'location', 'Northwest')
 saveas(gcf, 'figures/welfare_gains.png')
 
 

@@ -18,26 +18,27 @@ kappa = 2;              % and shape parameter kappa
 xi = 5;                 % 1/xi is the fraction of feasible combinations
 zeta = 0.01;            % probability technology line shuts down
 gamma = 0.6;            % match to labor share of GDP
-epsilon = 2;            % from Acemoglu, Akcigit, Bloom and Kerr (2013) - pg 21
+epsilon = 2;            % Elasticity of substitution
 beta = 1/(1.05);        % intertemporal discount factor
 Pi = gamma/(1-beta);    % constant part of the price of innovation
-nu = 3.1;               % ratio of firms to inventors; chosen so that nrof firms makes avg growth rate is approximately 2%
+nu = 3.1;               % ratio of firms to inventors
 g1 = 0.066;             % initial growth rate of patent numbers
-g2 = 0.02;              % final growth rate of patents
+g2 = 0.02;              % final growth rate of patent numbers
 
 % store parameters
 params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, epsilon, beta, Pi, nu, g1, g2);
 
-beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
+%beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
+beg_inv = 1;
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
-Tsubs = 10;             % number of periods to run subsidy simulation
+Tsubs = 30;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
 
 % Matrix to keep track of state of each product line
-M0 = 1;                 %initial number of technologies
+M0 = 10;                %initial number of technologies
 % [ID, n (pool size), z (number of times reused), birth year, number of periods that a tech remains hot]
 Mmat0 = zeros(M0,5);
 Mmat0(1:M0,1) = 1:M0;                % m ID
@@ -54,6 +55,10 @@ patmat1 = zeros(Tsubs,4);
 % state of product line: 1-new tech 2-recomb 3-reuse
 state0 = zeros(1,M0);
 state0(1:M0) = 1;
+
+% initial quality of product lines (= 1)
+nroffirms = round(nu*beg_inv); 
+quality0 = ones(nroffirms,1);
 
 % Simulate Model
 
@@ -85,7 +90,7 @@ welfare_subs = zeros(2, num_simul, length(subsidy));
 
 for s = 1:num_simul
     seed1 = 1000*rand;
-    model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, [0 0], seed1);
+    model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, quality0, [0 0], seed1);
 
     Mmat = model_plain.Mmat;
     state = model_plain.state;
@@ -94,7 +99,7 @@ for s = 1:num_simul
 
     seed2 = 1000*rand;
     
-    model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, [0 0], seed2);
+    model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, [0 0], seed2);
 
     % In period 0, all ideas are new.
     patmat(:, :, s) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_0.patmat];
@@ -109,7 +114,7 @@ for s = 1:num_simul
 
     for v = 1:length(subsidy)
 
-        model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, subsidy(v,:), seed2);
+        model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, subsidy(v,:), seed2);
 
         patmat_subs(:,:,s,v) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_1.patmat];
         nrofpatents_subs(:,s,v) = [model_plain.nrofpatents; model_subs_1.nrofpatents];
@@ -171,13 +176,16 @@ ylabel('Number of patents (logs)')
 saveas(gcf, 'figures/num_pats.png')
 
 figure(4)
-plot(patent_shares(:,1), patent_shares(:,2), '-k', 'LineWidth',2, patent_shares(:,1),patent_shares(:,3), '--k',...
-    'LineWidth', 2, patent_shares(:,1),patent_shares(:,4), '-^k', 'Line) 
-xlim([beg_year, beg_year+Tmax])
+plot(patent_shares(:,1), patent_shares(:,2), '-k', 'LineWidth', 1)
+hold on
+plot(patent_shares(:,1),patent_shares(:,3), '--k', 'LineWidth', 1)
+plot(patent_shares(:,1),patent_shares(:,4), '-^k', 'LineWidth', 1, 'MarkerSize', 3) 
+xlim([beg_year-1, beg_year+Tmax])
 xlabel('Year')
 ylabel('Patent Shares')
 legend('New technologies', 'New combinations', 'Refinements')
 title('Fraction of patents by nature of innovation')
+hold off
 saveas(gcf, 'figures/patents.png')
 
 % Welfare gains with subsidy
