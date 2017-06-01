@@ -4,8 +4,7 @@ clc
 
 %cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
 
-%delete(gcp)
-%parpool(2)
+rng(10)
 
 %% Parameters
 
@@ -32,7 +31,7 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
-Tsubs = 30;             % number of periods to run subsidy simulation
+Tsubs = 20;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
@@ -73,36 +72,34 @@ policy_cost = zeros(Tmax, num_simul);
 nrofpatents = zeros(Tmax, num_simul);
 welfare = zeros(2, num_simul);
 
-subsidy_vals = [.01 .03 .05 .1];
+subsidy_vals = [.05 .1 .15 .2];
 subsidy = [subsidy_vals' zeros(length(subsidy_vals),1); ...
             zeros(length(subsidy_vals),1) subsidy_vals']; % subsidy for [new tech, new comb]
 
-patmat_subs = zeros(Tmax+1, 4, length(subsidy), num_simul);
-growth_subs = zeros(Tmax, length(subsidy), num_simul);
-consumption_subs = zeros(Tmax, length(subsidy), num_simul);
-GDP_subs = zeros(Tmax, length(subsidy), num_simul);
-firm_cost_subs = zeros(Tmax, length(subsidy), num_simul);
-inventor_cost_subs = zeros(Tmax, length(subsidy), num_simul);
-policy_cost_subs = zeros(Tmax, length(subsidy), num_simul);
-nrofpatents_subs = zeros(Tmax, length(subsidy), num_simul);
-welfare_subs = zeros(2, length(subsidy), num_simul);
+patmat_subs = zeros(Tmax+1, 4, num_simul, length(subsidy));
+growth_subs = zeros(Tmax, num_simul, length(subsidy));
+consumption_subs = zeros(Tmax, num_simul, length(subsidy));
+GDP_subs = zeros(Tmax, num_simul, length(subsidy));
+firm_cost_subs = zeros(Tmax, num_simul, length(subsidy));
+inventor_cost_subs = zeros(Tmax, num_simul, length(subsidy));
+policy_cost_subs = zeros(Tmax, num_simul, length(subsidy));
+nrofpatents_subs = zeros(Tmax, num_simul, length(subsidy));
+welfare_subs = zeros(2, num_simul, length(subsidy));
 
-pat0 = repmat([beg_year, 1, 0, 0], 1, 1, length(subsidy));
-
-parfor s = 1:num_simul
+for s = 1:num_simul
     seed1 = 1000*rand;
     model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, quality0, [0 0], seed1);
 
-    % generate variables that will be input into second half of simulations (with subsidy)
     Mmat = model_plain.Mmat;
     state = model_plain.state;
     quality = model_plain.quality;
     nrofinv = model_plain.nrofinv;
+
     seed2 = 1000*rand;
     
     model_subs_0 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, [0 0], seed2);
 
-    % store result of simulation without subsidy
+    % In period 0, all ideas are new.
     patmat(:,:,s) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_0.patmat];
     nrofpatents(:,s) = [model_plain.nrofpatents; model_subs_0.nrofpatents];
     consumption(:,s) = [model_plain.consumption; model_subs_0.consumption];
@@ -113,45 +110,22 @@ parfor s = 1:num_simul
     growth(:,s) = [model_plain.growth; model_subs_0.growth];
     welfare(:,s) = [model_plain.welfare; model_subs_0.welfare];
 
-    % Initialize variables for inner loop (parfor)
-    patmat_temp = zeros(Tsubs, 4, length(subsidy));
-    nrofpatents_temp = zeros(Tsubs, length(subsidy));
-    consumption_temp = zeros(Tsubs, length(subsidy));
-    GDP_temp = zeros(Tsubs, length(subsidy));
-    firm_cost_temp = zeros(Tsubs, length(subsidy));
-    inventor_cost_temp = zeros(Tsubs, length(subsidy));
-    policy_cost_temp = zeros(Tsubs, length(subsidy));
-    growth_temp = zeros(Tsubs, length(subsidy));
-    welfare_temp = zeros(1, length(subsidy));
-
     for v = 1:length(subsidy)
 
         model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, subsidy(v,:), seed2);
 
-        % store values in temporary variables so that parfor does generate a classification error
-        patmat_temp(:,:,v) = model_subs_1.patmat;
-        nrofpatents_temp(:,v) = model_subs_1.nrofpatents;
-        consumption_temp(:,v) = model_subs_1.consumption;
-        GDP_temp(:,v) = model_subs_1.GDP;
-        firm_cost_temp(:,v) = model_subs_1.firm_cost;
-        inventor_cost_temp(:,v) = model_subs_1.inventor_cost;
-        policy_cost_temp(:,v) = model_subs_1.policy_cost;
-        growth_temp(:,v) = model_subs_1.growth;
-        welfare_temp(v) = model_subs_1.welfare;
+        patmat_subs(:,:,s,v) = [[beg_year, 1, 0, 0]; model_plain.patmat; model_subs_1.patmat];
+        nrofpatents_subs(:,s,v) = [model_plain.nrofpatents; model_subs_1.nrofpatents];
+        consumption_subs(:,s,v) = [model_plain.consumption; model_subs_1.consumption];
+        GDP_subs(:,s,v) = [model_plain.GDP; model_subs_1.GDP];
+        firm_cost_subs(:,s,v) = [model_plain.firm_cost; model_subs_1.firm_cost];
+        inventor_cost_subs(:,s,v) = [model_plain.inventor_cost; model_subs_1.inventor_cost];
+        policy_cost_subs(:,s,v) = [model_plain.policy_cost; model_subs_1.policy_cost];
+        growth_subs(:,s,v) = [model_plain.growth; model_subs_1.growth];
+        welfare_subs(:,s,v) = [model_plain.welfare; model_subs_1.welfare];
 
     end
-
-    % store values of the model with subsidy
-    patmat_subs(:,:,:,s) = [pat0; repmat(model_plain.patmat,1,1,length(subsidy)); patmat_temp];
-    nrofpatents_subs(:,:,s) = [repmat(model_plain.nrofpatents,1,length(subsidy)); nrofpatents_temp];
-    consumption_subs(:,:,s) = [repmat(model_plain.consumption,1,length(subsidy)); consumption_temp];
-    GDP_subs(:,:,s) = [repmat(model_plain.GDP,1,length(subsidy)); GDP_temp];
-    firm_cost_subs(:,:,s) = [repmat(model_plain.firm_cost,1,length(subsidy)); firm_cost_temp];
-    inventor_cost_subs(:,:,s) = [repmat(model_plain.inventor_cost,1,length(subsidy)); inventor_cost_temp];
-    policy_cost_subs(:,:,s) = [repmat(model_plain.policy_cost,1,length(subsidy)); policy_cost_temp];
-    growth_subs(:,:,s) = [repmat(model_plain.growth,1,length(subsidy)); growth_temp];
-    welfare_subs(:,:,s) = [repmat(model_plain.welfare,1,length(subsidy)); welfare_temp];
-
+    
     display(['SIMULATION NUMBER ' num2str(s)])
 end
 
@@ -165,15 +139,15 @@ policy_cost = mean(policy_cost,2);
 growth = mean(growth,2);
 welfare = mean(welfare,2);
 
-patent_shares_subs = mean(patmat_subs,4);
-nrofpatents_subs = mean(nrofpatents_subs,3);
-GDP_subs = mean(GDP_subs,3);
-firm_cost_subs = mean(firm_cost_subs,3);
-consumption_subs = mean(consumption_subs,3);
-inventor_cost_subs = mean(inventor_cost_subs,3);
-policy_cost_subs = mean(policy_cost_subs,3);
-growth_subs = mean(growth_subs,3);
-welfare_subs = mean(welfare_subs,3);
+patent_shares_subs = mean(patmat_subs,3);
+nrofpatents_subs = mean(nrofpatents_subs,2);
+GDP_subs = mean(GDP_subs,2);
+firm_cost_subs = mean(firm_cost_subs,2);
+consumption_subs = mean(consumption_subs,2);
+inventor_cost_subs = mean(inventor_cost_subs,2);
+policy_cost_subs = mean(policy_cost_subs,2);
+growth_subs = mean(growth_subs,2);
+welfare_subs = mean(welfare_subs,2);
 
 %% PLOTS
 
@@ -216,11 +190,13 @@ saveas(gcf, 'figures/patents.png')
 
 % Welfare gains with subsidy
 
-welfareNT = welfare_subs(:,1:length(subsidy_vals));
-welfareNC = welfare_subs(:,length(subsidy_vals)+1:2*length(subsidy_vals));
+welfareNT = squeeze(welfare_subs(:,:,1:length(subsidy_vals)));
+welfareNC = squeeze(welfare_subs(:,:,length(subsidy_vals)+1:2*length(subsidy_vals)));
+%welfareBOTH = squeeze(welfare_subs(:,:,2*length(subsidy_vals)+1:end));
 
 Delta_welfareNT = (welfareNT - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
 Delta_welfareNC = (welfareNC - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
+%Delta_welfareBOTH = (welfareBOTH - repmat(welfare,1,length(subsidy_vals)))./repmat(welfare,1,length(subsidy_vals));
 
 figure(5)
 plot([0,subsidy_vals], [0,Delta_welfareNT(2,:)], '-k', [0,subsidy_vals], [0,Delta_welfareNC(2,:)], '--k')

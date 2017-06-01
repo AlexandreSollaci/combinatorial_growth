@@ -2,7 +2,7 @@ clear
 close all
 clc
 
-cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
+%cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
 
 %delete(gcp)
 %parpool(2)
@@ -31,8 +31,8 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
-Tbase = 20;            % number of periods to run baseline simulation
-Tsubs = 20;             % number of periods to run subsidy simulation
+Tbase = 180;            % number of periods to run baseline simulation
+Tsubs = 30;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
@@ -62,7 +62,7 @@ quality0 = ones(nroffirms,1);
 
 % Simulate Model
 
-num_simul = 10;         % number of times model is simulated
+num_simul = 20;         % number of times model is simulated
 patmat = zeros(Tmax+1, 4, num_simul);
 growth = zeros(Tmax, num_simul);
 consumption = zeros(Tmax, num_simul);
@@ -73,7 +73,7 @@ policy_cost = zeros(Tmax, num_simul);
 nrofpatents = zeros(Tmax, num_simul);
 welfare = zeros(2, num_simul);
 
-subsidy_vals = [.01 .03 .05 .1];
+subsidy_vals = [.02 .05 .1 .2 .3];
 subsidy = [subsidy_vals' zeros(length(subsidy_vals),1); ...
             zeros(length(subsidy_vals),1) subsidy_vals']; % subsidy for [new tech, new comb]
 
@@ -89,7 +89,7 @@ welfare_subs = zeros(2, length(subsidy), num_simul);
 
 pat0 = repmat([beg_year, 1, 0, 0], 1, 1, length(subsidy));
 
-for s = 1:num_simul
+parfor s = 1:num_simul
     seed1 = 1000*rand;
     model_plain = simulate_model(params, Tbase, beg_year, beg_inv, Mmat0, patmat0, state0, quality0, [0 0], seed1);
 
@@ -124,7 +124,7 @@ for s = 1:num_simul
     growth_temp = zeros(Tsubs, length(subsidy));
     welfare_temp = zeros(1, length(subsidy));
 
-    parfor v = 1:length(subsidy)
+    for v = 1:length(subsidy)
 
         model_subs_1 = simulate_model(params, Tsubs, beg_year+Tbase, nrofinv, Mmat, patmat1, state, quality, subsidy(v,:), seed2);
 
