@@ -183,7 +183,7 @@ figure(1)
 plot(periods, growth, '-k')
 xlim([beg_year, beg_year+Tmax])
 title('Rate of Growth')
-saveas(gcf, 'figures/growth.png')
+saveas(gcf, 'files/figures/growth.png')
 
 figure(2)
 plot(periods, log(GDP), 'k', periods, log(consumption), '--k', periods, log(firm_cost), '-^k', periods, log(inventor_cost), '-ok')
@@ -191,7 +191,7 @@ legend('GDP', 'Consumption', 'Firms` Cost', 'Inventors` Cost', 'location', 'Nort
 title('Aggregate Production, Consumption and Costs (logs)')
 xlabel('Year')
 xlim([beg_year, beg_year+Tmax])
-saveas(gcf, 'figures/aggregates.png')
+saveas(gcf, 'files/figures/aggregates.png')
 
 figure(3)
 plot(periods, log(nrofpatents), '-k')
@@ -199,7 +199,7 @@ title('Number of patents produced by year')
 xlim([beg_year, beg_year+Tmax])
 xlabel('Year')
 ylabel('Number of patents (logs)')
-saveas(gcf, 'figures/num_pats.png')
+saveas(gcf, 'files/figures/num_pats.png')
 
 figure(4)
 plot(patent_shares(:,1), patent_shares(:,2), '-k', 'LineWidth', 1)
@@ -212,7 +212,7 @@ ylabel('Patent Shares')
 legend('New technologies', 'New combinations', 'Refinements')
 title('Fraction of patents by nature of innovation')
 hold off
-saveas(gcf, 'figures/patents.png')
+saveas(gcf, 'files/figures/patents.png')
 
 % Welfare gains with subsidy
 
