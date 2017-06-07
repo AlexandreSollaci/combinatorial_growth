@@ -47,7 +47,9 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     firm_cost = zeros(Tmax,1);
     policy_cost = zeros(Tmax,1);
     consumption = zeros(Tmax,1);
-    discounted_utility = zeros(Tmax, 1);
+    discounted_utility = zeros(Tmax,1);
+    avg_quality = zeros(Tmax,1);
+    techline_size = zeros(Tmax,1);
 
     %% Start loops
 
@@ -222,6 +224,10 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
         else
             patmat(t,:) = [year, 1, 0, 0];
         end
+        
+        % record average quality and technology line size
+        avg_quality(t) = mean(quality);
+        techline_size(t) = length(state(state>0));
 
         % match patents with firms
         inventions = [etaH*ones(round(nrofnewtech),1); etaM*ones(round(nrofnewcomb),1); ...
@@ -245,7 +251,7 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     welfare = sum(discounted_utility);
 
    outputs = v2struct(Mmat, state, patmat, GDP, consumption, inventor_cost, firm_cost, policy_cost, ...
-    nrofpatents, quality, growth, welfare, nrofinv);
+    nrofpatents, quality, growth, welfare, nrofinv, avg_quality, techline_size);
 
 end
 
