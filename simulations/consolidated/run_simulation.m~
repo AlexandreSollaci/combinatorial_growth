@@ -7,6 +7,9 @@ clc
 %delete(gcp)
 %parpool(2)
 
+% on server
+%parpool('torque',50) % up to 80
+
 %% Parameters
 
 etaH = 0.15;            % NT step size
@@ -32,7 +35,7 @@ params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, ep
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
-Tsubs = 30;             % number of periods to run subsidy simulation
+Tsubs = 5;             % number of periods to run subsidy simulation
 Tmax = Tbase + Tsubs;
 
 %% RUN THE MODEL
@@ -62,7 +65,7 @@ quality0 = ones(nroffirms,1);
 
 % Simulate Model
 
-num_simul = 20;         % number of times model is simulated
+num_simul = 50;         % number of times model is simulated
 patmat = zeros(Tmax+1, 4, num_simul);
 growth = zeros(Tmax, num_simul);
 consumption = zeros(Tmax, num_simul);
@@ -72,8 +75,10 @@ inventor_cost = zeros(Tmax, num_simul);
 policy_cost = zeros(Tmax, num_simul);
 nrofpatents = zeros(Tmax, num_simul);
 welfare = zeros(2, num_simul);
+avg_quality = zeros(Tmax, num_simul);
+techline_size = zeros(Tmax, num_simul);
 
-subsidy_vals = [.02 .05 .1 .2 .3];
+subsidy_vals = [.025 .05 .1 .2 .3 .4 .5];
 subsidy = [subsidy_vals' zeros(length(subsidy_vals),1); ...
             zeros(length(subsidy_vals),1) subsidy_vals']; % subsidy for [new tech, new comb]
 
@@ -86,6 +91,8 @@ inventor_cost_subs = zeros(Tmax, length(subsidy), num_simul);
 policy_cost_subs = zeros(Tmax, length(subsidy), num_simul);
 nrofpatents_subs = zeros(Tmax, length(subsidy), num_simul);
 welfare_subs = zeros(2, length(subsidy), num_simul);
+avg_quality_subs = zeros(Tmax, length(subsidy), num_simul);
+techline_size_subs = zeros(Tmax, length(subsidy), num_simul);
 
 pat0 = repmat([beg_year, 1, 0, 0], 1, 1, length(subsidy));
 
@@ -112,6 +119,8 @@ parfor s = 1:num_simul
     policy_cost(:,s) = [model_plain.policy_cost; model_subs_0.policy_cost];
     growth(:,s) = [model_plain.growth; model_subs_0.growth];
     welfare(:,s) = [model_plain.welfare; model_subs_0.welfare];
+    avg_quality(:,s) = [model_plain.avg_quality; model_subs_0.avg_quality];
+    techline_size(:,s) = [model_plain.techline_size; model_subs_0.techline_size];
 
     % Initialize variables for inner loop (parfor)
     patmat_temp = zeros(Tsubs, 4, length(subsidy));
@@ -123,6 +132,8 @@ parfor s = 1:num_simul
     policy_cost_temp = zeros(Tsubs, length(subsidy));
     growth_temp = zeros(Tsubs, length(subsidy));
     welfare_temp = zeros(1, length(subsidy));
+    avg_quality_temp = zeros(Tsubs, length(subsidy));
+    techline_temp = zeros(Tsubs, length(subsidy));
 
     for v = 1:length(subsidy)
 
@@ -138,6 +149,8 @@ parfor s = 1:num_simul
         policy_cost_temp(:,v) = model_subs_1.policy_cost;
         growth_temp(:,v) = model_subs_1.growth;
         welfare_temp(v) = model_subs_1.welfare;
+        avg_quality_temp(:,v) = model_subs_1.avg_quality;
+        techline_temp(:,v) = model_subs_1.techline_size;
 
     end
 
@@ -151,6 +164,8 @@ parfor s = 1:num_simul
     policy_cost_subs(:,:,s) = [repmat(model_plain.policy_cost,1,length(subsidy)); policy_cost_temp];
     growth_subs(:,:,s) = [repmat(model_plain.growth,1,length(subsidy)); growth_temp];
     welfare_subs(:,:,s) = [repmat(model_plain.welfare,1,length(subsidy)); welfare_temp];
+    avg_quality_subs(:,:,s) = [repmat(model_plain.avg_quality,1,length(subsidy)); avg_quality_temp];
+    techline_size_subs(:,:,s) = [repmat(model_plain.techline_size,1,length(subsidy)); techline_temp];
 
     display(['SIMULATION NUMBER ' num2str(s)])
 end
@@ -164,6 +179,8 @@ inventor_cost = mean(inventor_cost,2);
 policy_cost = mean(policy_cost,2);
 growth = mean(growth,2);
 welfare = mean(welfare,2);
+avg_quality = mean(avg_quality,2);
+techline_size = mean(techline_size,2);
 
 patent_shares_subs = mean(patmat_subs,4);
 nrofpatents_subs = mean(nrofpatents_subs,3);
@@ -174,6 +191,8 @@ inventor_cost_subs = mean(inventor_cost_subs,3);
 policy_cost_subs = mean(policy_cost_subs,3);
 growth_subs = mean(growth_subs,3);
 welfare_subs = mean(welfare_subs,3);
+avg_quality_subs = mean(avg_quality_subs,3);
+techline_size_subs = mean(techline_size_subs,3);
 
 %% PLOTS
 
@@ -232,33 +251,35 @@ saveas(gcf, 'files/figures/welfare_gains.png')
 
 % Summary of Economy with Subsidies
 
+index = find(subsidy_vals == .1);
+index2 = index + length(subsidy_vals);
+substime = logical([zeros(Tbase-1,1); ones(Tsubs+1,1)]);
+
 figure(6)
-plot(periods, growth, ':k', periods, growth_subs(:,3), '-k', periods, growth_subs(:,8), '--k')
-xlim([beg_year, beg_year+Tmax])
-legend('No subsidy', '10% NT', '10% NC')
+plot(periods(substime), growth(substime), ':k', periods(substime), growth_subs(substime,index), '-k', periods(substime), growth_subs(substime,index2), '--k')
+xlim([min(periods(substime)), max(periods(substime))])
+legend('No subsidy', '10% NT', '10% NC', 'location', 'Northwest')
 title('Rate of Growth')
 saveas(gcf, 'files/figures/growth_subs.png')
 
-substime = logical([zeros(Tbase-1,1); ones(Tsubs+1,1)]);
-
 figure(7)
 subplot(2,2,1)
-plot(periods(substime), log(consumption(substime)), ':k', periods(substime), log(consumption_subs(substime,3)), '-k', periods(substime), log(consumption_subs(substime,8)), '--k')
+plot(periods(substime), log(consumption(substime)), ':k', periods(substime), log(consumption_subs(substime,index)), '-k', periods(substime), log(consumption_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
 legend('No subsidy', '10% NT', '10% NC', 'location','Northwest')
 title('Consumption (logs)')
 subplot(2,2,2)
-plot(periods(substime), log(firm_cost(substime)), ':k', periods(substime), log(firm_cost_subs(substime,3)), '-k', periods(substime), log(firm_cost_subs(substime,8)), '--k')
+plot(periods(substime), log(firm_cost(substime)), ':k', periods(substime), log(firm_cost_subs(substime,index)), '-k', periods(substime), log(firm_cost_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('Firms` Costs (logs)')
 subplot(2,2,3)
-plot(periods(substime), log(inventor_cost(substime)), ':k', periods(substime), log(inventor_cost_subs(substime,3)), '-k', periods(substime), log(inventor_cost_subs(substime,8)), '--k')
+plot(periods(substime), log(inventor_cost(substime)), ':k', periods(substime), log(inventor_cost_subs(substime,index)), '-k', periods(substime), log(inventor_cost_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('Inventors` Costs (logs)')
 subplot(2,2,4)
-plot(periods(substime), log(policy_cost(substime)), ':k', periods(substime), log(policy_cost_subs(substime,3)), '-k', periods(substime), log(policy_cost_subs(substime,8)), '--k')
+plot(periods(substime), log(policy_cost(substime)), ':k', periods(substime), log(policy_cost_subs(substime,index)), '-k', periods(substime), log(policy_cost_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('Cost of Subsidies (logs)')
@@ -266,58 +287,71 @@ saveas(gcf, 'files/figures/aggregates_subs.png')
 
 figure(8)
 subplot(2,2,1)
-plot(periods(substime), log(consumption(substime)), ':k', periods(substime), log(consumption_subs(substime,3)), '-k', periods(substime), log(consumption_subs(substime,8)), '--k')
+plot(periods(substime), consumption_subs(substime,index) - consumption(substime), '-k', periods(substime), consumption_subs(substime,index2) - consumption(substime), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '10% NT', '10% NC', 'location','Northwest')
-title('Consumption (logs)')
+legend('10% NT', '10% NC', 'location','Northwest')
+title('Change in Consumption')
 subplot(2,2,2)
-plot(periods(substime), log(firm_cost(substime)), ':k', periods(substime), log(firm_cost_subs(substime,3)), '-k', periods(substime), log(firm_cost_subs(substime,8)), '--k')
+plot(periods(substime), firm_cost_subs(substime,index) - firm_cost(substime), '-k', periods(substime), firm_cost_subs(substime,index2) - firm_cost(substime), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '10% NT', '10% NC','location','Northwest')
-title('Firms` Costs (logs)')
+legend('10% NT', '10% NC','location','Northwest')
+title('Change in Firms` Costs')
 subplot(2,2,3)
-plot(periods(substime), log(inventor_cost(substime)), ':k', periods(substime), log(inventor_cost_subs(substime,3)), '-k', periods(substime), log(inventor_cost_subs(substime,8)), '--k')
+plot(periods(substime), inventor_cost_subs(substime,index) - inventor_cost(substime), '-k', periods(substime), inventor_cost_subs(substime,index2) - inventor_cost(substime), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '10% NT', '10% NC','location','Northwest')
-title('Inventors` Costs (logs)')
+legend('10% NT', '10% NC','location','Northeast')
+title('Change in Inventors` Costs')
 subplot(2,2,4)
-plot(periods(substime), log(policy_cost(substime)), ':k', periods(substime), log(policy_cost_subs(substime,3)), '-k', periods(substime), log(policy_cost_subs(substime,8)), '--k')
+plot(periods(substime), policy_cost_subs(substime,index) - policy_cost(substime), '-k', periods(substime), policy_cost_subs(substime,index2) - policy_cost(substime), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '10% NT', '10% NC','location','Northwest')
-title('Cost of Subsidies (logs)')
-saveas(gcf, 'files/figures/aggregates_subs.png')
+legend('10% NT', '10% NC','location','Northwest')
+title('Change in Cost of Subsidies')
+saveas(gcf, 'files/figures/change_aggregates_subs.png')
 
 figure(9)
-plot(periods(substime), log(GDP(substime)), ':k', periods(substime), log(GDP_subs(substime,3)), '-k', periods(substime), log(GDP_subs(substime,8)), '--k')
+plot(periods(substime), log(GDP(substime)), ':k', periods(substime), log(GDP_subs(substime,index)), '-k', periods(substime), log(GDP_subs(substime,index2)), '--k')
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('GDP (logs)')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
 saveas(gcf, 'files/figures/GDP_subs.png')
 
-figure(9)
+figure(10)
+plot(periods(substime), avg_quality(substime), ':k', periods(substime), avg_quality_subs(substime,index), '-k', periods(substime), avg_quality_subs(substime,index2), '--k')
+legend('No subsidy', '10% NT', '10% NC','location','Northwest')
+title('Average Product Quality')
+xlabel('Year')
+xlim([min(periods(substime)), max(periods(substime))])
+saveas(gcf, 'files/figures/quality_subs.png')
+
+figure(11)
 subplot(2,2,1)
-plot(patent_shares(substime,1),patent_shares(substime,2), ':k', patent_shares(substime,1),patent_shares_subs(substime,2,3), '-k',...
-    patent_shares(substime,1),patent_shares_subs(substime,2,8), '--k')
+plot(patent_shares(substime,1),patent_shares(substime,2), ':r', patent_shares(substime,1),patent_shares_subs(substime,2,index), '-k',...
+    patent_shares(substime,1),patent_shares_subs(substime,2,index2), '--k')
 legend('No subsidy', '10% NT', '10% NC','location','Northeast')
 title('Share of NT Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
 subplot(2,2,2)
-plot(patent_shares(substime,1),patent_shares(substime,3), ':k', patent_shares(substime,1),patent_shares_subs(substime,3,3), '-k',...
-    patent_shares(substime,1),patent_shares_subs(substime,3,8), '--k')
+plot(patent_shares(substime,1),patent_shares(substime,3), ':k', patent_shares(substime,1),patent_shares_subs(substime,3,index), '-k',...
+    patent_shares(substime,1),patent_shares_subs(substime,3,index2), '--k')
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('Share of NC Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
 subplot(2,2,3)
-plot(patent_shares(substime,1),patent_shares(substime,4), ':k', patent_shares(substime,1),patent_shares_subs(substime,4,3), '-k',...
-    patent_shares(substime,1),patent_shares_subs(substime,4,8), '--k')
+plot(patent_shares(substime,1),patent_shares(substime,4), ':k', patent_shares(substime,1),patent_shares_subs(substime,4,index), '-k',...
+    patent_shares(substime,1),patent_shares_subs(substime,4,index2), '--k')
 legend('No subsidy', '10% NT', '10% NC','location','Southwest')
 title('Share of Reuse Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
-
+subplot(2,2,4)
+plot(periods(substime), techline_size(substime), ':r', periods(substime), techline_size_subs(substime,index), '-k', periods(substime), techline_size_subs(substime,index2), '--k')
+legend('No subsidy', '10% NT', '10% NC','location','Northwest')
+title('Size of the Technology Line')
+xlabel('Year')
+xlim([min(periods(substime)), max(periods(substime))])
 saveas(gcf, 'files/figures/patent_subs.png')
 
 

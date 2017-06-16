@@ -8,7 +8,7 @@ clc
 %parpool(2)
 
 % on server
-%parpool('torque',50) % up to 80
+parpool('torque',50) % up to 80
 
 %% Parameters
 
@@ -78,7 +78,7 @@ welfare = zeros(2, num_simul);
 avg_quality = zeros(Tmax, num_simul);
 techline_size = zeros(Tmax, num_simul);
 
-subsidy_vals = [.025 .05 .1 .2 .3 .4 .5];
+subsidy_vals = [.05 .1 .2 .3 .4 .5 .6 .7 .8 .9];
 subsidy = [subsidy_vals' zeros(length(subsidy_vals),1); ...
             zeros(length(subsidy_vals),1) subsidy_vals']; % subsidy for [new tech, new comb]
 
@@ -179,6 +179,8 @@ inventor_cost = mean(inventor_cost,2);
 policy_cost = mean(policy_cost,2);
 growth = mean(growth,2);
 welfare = mean(welfare,2);
+avg_quality = mean(avg_quality,2);
+techline_size = mean(techline_size,2);
 
 patent_shares_subs = mean(patmat_subs,4);
 nrofpatents_subs = mean(nrofpatents_subs,3);
@@ -189,6 +191,8 @@ inventor_cost_subs = mean(inventor_cost_subs,3);
 policy_cost_subs = mean(policy_cost_subs,3);
 growth_subs = mean(growth_subs,3);
 welfare_subs = mean(welfare_subs,3);
+avg_quality_subs = mean(avg_quality_subs,3);
+techline_size_subs = mean(techline_size_subs,3);
 
 %% PLOTS
 
@@ -201,11 +205,16 @@ title('Rate of Growth')
 saveas(gcf, 'files/figures/growth.png')
 
 figure(2)
-plot(periods, log(GDP), 'k', periods, log(consumption), '--k', periods, log(firm_cost), '-^k', periods, log(inventor_cost), '-ok')
+plot(periods, log(GDP), '-k', 'LineWidth', 1)
+hold on
+plot(periods, log(consumption), '--k', 'LineWidth', 1)
+plot(periods, log(firm_cost), '-^k', 'LineWidth', 1, 'MarkerSize', 3)
+plot(periods, log(inventor_cost), '-.k', 'LineWidth', 1, 'MarkerSize', 3)
 legend('GDP', 'Consumption', 'Firms` Cost', 'Inventors` Cost', 'location', 'Northwest')
 title('Aggregate Production, Consumption and Costs (logs)')
 xlabel('Year')
 xlim([beg_year, beg_year+Tmax])
+hold off
 saveas(gcf, 'files/figures/aggregates.png')
 
 figure(3)
@@ -242,12 +251,14 @@ plot([0,subsidy_vals], [0,Delta_welfareNT(2,:)], '-k', [0,subsidy_vals], [0,Delt
 title('Welfare Gains from Subsidy')
 ylabel('Welfare gains (percentage terms, relative to no subsidy)')
 xlabel('Subsidy Value')
-legend('New Technologies', 'New Combinations', 'location', 'Northwest')
+xlim([0 max(subsidy_vals)]);
+xticks(linspace(0,0.9,10));
+legend('New Technologies', 'New Combinations', 'location', 'Northeast')
 saveas(gcf, 'files/figures/welfare_gains.png')
 
 % Summary of Economy with Subsidies
 
-index = find(subsidy_vals == .1);
+index = find(subsidy_vals == .1);   % effect of a 10% subsidy
 index2 = index + length(subsidy_vals);
 substime = logical([zeros(Tbase-1,1); ones(Tsubs+1,1)]);
 
@@ -343,7 +354,7 @@ title('Share of Reuse Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
 subplot(2,2,4)
-plot(periods(substime), techline_size(substime), ':k', periods(substime), techline_subs(substime,index), '-k', periods(substime), techline_subs(substime,index2), '--k')
+plot(periods(substime), techline_size(substime), ':k', periods(substime), techline_size_subs(substime,index), '-k', periods(substime), techline_size_subs(substime,index2), '--k')
 legend('No subsidy', '10% NT', '10% NC','location','Northwest')
 title('Size of the Technology Line')
 xlabel('Year')
