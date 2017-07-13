@@ -4,7 +4,7 @@ clc
 
 %cd('/Users/alexandresollaci/Documents/UChicago/RA/Combinatorial growth/combinatorial_growth/simulations/consolidated/')
 
-%delete(gcp)
+delete(gcp)
 %parpool(2)
 
 % on server
@@ -29,14 +29,15 @@ nu = 3.1;               % ratio of firms to inventors
 g1 = 0.066;             % initial growth rate of patent numbers
 g2 = 0.02;              % final growth rate of patent numbers
 
-% store parameters
-params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, epsilon, beta, Pi, nu, g1, g2);
-
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
 Tsubs = 15;             % number of periods to run subsidy simulation
+Tdur = 5;               % duration of the subsidy
 Tmax = Tbase + Tsubs;
+
+% store parameters
+params = v2struct(etaH, etaM, etaL, tau, phi, lambda, kappa, xi, zeta, gamma, epsilon, beta, Pi, nu, g1, g2, Tdur);
 
 %% RUN THE MODEL
 

@@ -1,4 +1,5 @@
-function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summary_matrix, patent_matrix, tech_state, prod_quality, subsidy, seed)
+function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summary_matrix, patent_matrix,...
+ tech_state, prod_quality, subsidy, seed)
 
     % turn on just in time compilation (makes for loops faster)
     feature accel on 
@@ -22,6 +23,7 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     nu = params.nu;
     g1 = params.g1;
     g2 = params.g2;
+    Tdur = params.Tdur;
 
     %% Load initial variables
 
@@ -35,8 +37,13 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     state = tech_state;
     quality = prod_quality;
 
-    subsidyNT = subsidy(1);
-    subsidyNC = subsidy(2);
+    if subsidy == [0 0]
+        subsidyNT = zeros(Tmax, 1);
+        subsidyNC = zeros(Tmax, 1);
+    else
+        subsidyNT = [subsidy(1)*ones(Tdur, 1); zeros(Tmax - Tdur, 1)];
+        subsidyNC = [subsidy(2)*ones(Tdur, 1); zeros(Tmax - Tdur, 1)];
+    end
 
     blocksize = 5000; % preallocate space for matrices
 
@@ -91,8 +98,8 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
             y = rand(2,1); 
             mstar = tau*log( (1 + y(1)*exp(phi*j/tau)) / (1-y(1)) );                     % Inverse of G
             alpha0 = lambda*(- log(1 - y(2)) )^(1/kappa) ;                               % Inverse of weibull CDF
-            alphaNT = alpha0*(1-subsidyNT); % new tech cost
-            alphaNC = alpha0*(1-subsidyNC); % new comb cost
+            alphaNT = alpha0*(1-subsidyNT(t)); % new tech cost
+            alphaNC = alpha0*(1-subsidyNC(t)); % new comb cost
             % cost of reuse normalized to zero
 
             if switchtocold(j) == 1 % whenever line becomes cold, restart count
@@ -165,19 +172,19 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
                 end
             
             
-                % innovation size of product line j
+                % innovation size of product line j in year t
                 innov_size(j) = mu(j)*( etaH*newtech + etaM*newcomb + etaL*reuse);
 
-                % patent type in product line j, this year
+                % patent type in product line j in year t
                 patent_type(j,:) = mu(j)*[newtech, newcomb, reuse];
 
                 hotline = (oldstate(j) <= 2) * (switchtocold(j) == 0); % = 1 if product line is hot
 
-                % cost of producing patents this year in product line j
+                % cost of producing patents this year in product line j in year t
                 patent_cost(j) = mu(j)*(alphaNT*newtech + alphaNC*newcomb*(1-hotline)); % if product line is hot, new comb is free
 
-                % cost of providing a subsidy for inventor's costs
-                subsidy_cost(j) = mu(j)*alpha0*( subsidyNT*newtech + subsidyNC*newcomb*(1-hotline)) ;
+                % cost of providing a subsidy for inventor's costs in year t
+                subsidy_cost(j) = mu(j)*alpha0*( subsidyNT(t)*newtech + subsidyNC(t)*newcomb*(1-hotline)) ;
 
             end
 
