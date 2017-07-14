@@ -37,7 +37,7 @@ function outputs = simulate_model(params, nrofperiods, beg_year, beg_inv, summar
     state = tech_state;
     quality = prod_quality;
 
-    if subsidy == [0 0]
+    if subsidy == 0
         subsidyNT = zeros(Tmax, 1);
         subsidyNC = zeros(Tmax, 1);
     else

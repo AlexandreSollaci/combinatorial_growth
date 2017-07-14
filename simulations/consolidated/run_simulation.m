@@ -32,8 +32,8 @@ g2 = 0.02;              % final growth rate of patent numbers
 beg_inv = exp(6);       % number of inventors, chosen to match initial number of patents
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
-Tsubs = 15;             % number of periods to run subsidy simulation
-Tdur = 5;               % duration of the subsidy
+Tsubs = 10;             % number of periods to run subsidy simulation
+Tdur = 10;              % duration of the subsidy
 Tmax = Tbase + Tsubs;
 
 % store parameters
@@ -266,7 +266,7 @@ substime = logical([zeros(Tbase-1,1); ones(Tsubs+1,1)]);
 figure(6)
 plot(periods(substime), growth(substime), ':k', periods(substime), growth_subs(substime,index), '-k', periods(substime), growth_subs(substime,index2), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '50% NT', '50% NC', 'location', 'Northwest')
+legend('No subsidy', '50% NT', '50% NC', 'location', 'Northeast')
 title('Rate of Growth')
 saveas(gcf, 'files/figures/growth_subs.png')
 
@@ -284,12 +284,12 @@ title('Firms` Costs (logs)')
 subplot(2,2,3)
 plot(periods(substime), log(inventor_cost(substime)), ':k', periods(substime), log(inventor_cost_subs(substime,index)), '-k', periods(substime), log(inventor_cost_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '50% NT', '50% NC','location','Northwest')
+legend('No subsidy', '50% NT', '50% NC','location','Northeast')
 title('Inventors` Costs (logs)')
 subplot(2,2,4)
 plot(periods(substime), log(policy_cost(substime)), ':k', periods(substime), log(policy_cost_subs(substime,index)), '-k', periods(substime), log(policy_cost_subs(substime,index2)), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('No subsidy', '50% NT', '50% NC','location','Northwest')
+legend('No subsidy', '50% NT', '50% NC','location','Northeast')
 title('Cost of Subsidies (logs)')
 saveas(gcf, 'files/figures/aggregates_subs.png')
 
@@ -312,7 +312,7 @@ title('Change in Inventors` Costs')
 subplot(2,2,4)
 plot(periods(substime), policy_cost_subs(substime,index) - policy_cost(substime), '-k', periods(substime), policy_cost_subs(substime,index2) - policy_cost(substime), '--k')
 xlim([min(periods(substime)), max(periods(substime))])
-legend('50% NT', '50% NC','location','Northwest')
+legend('50% NT', '50% NC','location','Northeast')
 title('Change in Cost of Subsidies')
 saveas(gcf, 'files/figures/change_aggregates_subs.png')
 
@@ -343,14 +343,14 @@ xlim([min(periods(substime)), max(periods(substime))])
 subplot(2,2,2)
 plot(patent_shares(substime,1),patent_shares(substime,3), ':k', patent_shares(substime,1),patent_shares_subs(substime,3,index), '-k',...
     patent_shares(substime,1),patent_shares_subs(substime,3,index2), '--k')
-legend('No subsidy', '50% NT', '50% NC','location','Northwest')
+legend('No subsidy', '50% NT', '50% NC','location','Northeast')
 title('Share of NC Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
 subplot(2,2,3)
 plot(patent_shares(substime,1),patent_shares(substime,4), ':k', patent_shares(substime,1),patent_shares_subs(substime,4,index), '-k',...
     patent_shares(substime,1),patent_shares_subs(substime,4,index2), '--k')
-legend('No subsidy', '50% NT', '50% NC','location','Southwest')
+legend('No subsidy', '50% NT', '50% NC','location','Southeast')
 title('Share of Reuse Patents')
 xlabel('Year')
 xlim([min(periods(substime)), max(periods(substime))])
