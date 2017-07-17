@@ -33,7 +33,7 @@ beg_inv = exp(6);       % number of inventors, chosen to match initial number of
 beg_year = 1836;        % beginning year
 Tbase = 180;            % number of periods to run baseline simulation
 Tsubs = 10;             % number of periods to run subsidy simulation
-Tdur = 10;              % duration of the subsidy
+Tdur = 5;              % duration of the subsidy
 Tmax = Tbase + Tsubs;
 
 % store parameters
